@@ -15,14 +15,14 @@ $lecture_data = getArray('lectures', 'course_id=' . $data['id'] . '');
 </div>
 
 <?php
-if ($lecture_data > 0) {
+if ($lecture_data && $lecture_data->num_rows > 0) {
     while ($row_lecture = mysqli_fetch_assoc($lecture_data)) {
 ?>
 <div class="my-3 p-3 bg-body border rounded shadow-sm">
     <h4 class="border-bottom pb-2 mb-0"><?= $row_lecture['lecture_title'] ?></h4>
     <?php
             $material_data =  getArray('materials', 'lecture_id=' . $row_lecture['id'] . '');
-            if ($material_data > 0) {
+            if ($material_data && $material_data->num_rows > 0) {
                 while ($row_material = mysqli_fetch_assoc($material_data)) {
                     switch ($row_material['type']) {
                         case "pdf":
