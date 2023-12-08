@@ -120,22 +120,22 @@ function insert($tableName, $columnValueArray = [])
 }
 
 //update
-function update($tableName, $columnValueArray = [], $condition)
-{
-	global $conn;
-	$statement = '';
-	foreach ($columnValueArray as $key => $value) {
-		$statement .= "$key='$value', ";
-	}
-	$statement = substr($statement, 0, -2);
-	$query = "UPDATE $tableName SET $statement WHERE $condition";
-	//var_dump($query);
-	$result = mysqli_query($conn, $query);
-	if ($result)
-		return true;
-	else
-		return false;
-}
+// function update($tableName, $columnValueArray = [], $condition)
+// {
+// 	global $conn;
+// 	$statement = '';
+// 	foreach ($columnValueArray as $key => $value) {
+// 		$statement .= "$key='$value', ";
+// 	}
+// 	$statement = substr($statement, 0, -2);
+// 	$query = "UPDATE $tableName SET $statement WHERE $condition";
+// 	//var_dump($query);
+// 	$result = mysqli_query($conn, $query);
+// 	if ($result)
+// 		return true;
+// 	else
+// 		return false;
+// }
 
 //delete
 function delete($tableName, $condition)
