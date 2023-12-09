@@ -118,7 +118,6 @@ function insert($tableName, $columnValueArray = [])
 	else
 		return false;
 }
-
 //update
 function update($tableName, $columnValueArray = [], $condition)
 {
@@ -152,17 +151,17 @@ function delete($tableName, $condition)
 }
 
 //count : đếm số lượng bản ghi trong bảng
-// function count($tableName, $condition)
-// {
-// 	global $conn;
-// 	if (!empty($condition)) {
-// 		$query = "SELECT * FROM $tableName WHERE $condition";
-// 	} else {
-// 		$query = "SELECT * FROM $tableName";
-// 	}
-// 	$result = mysqli_query($conn, $query);
-// 	return $result->num_rows;
-// }
+function countt($tableName, $condition)
+{
+	global $conn;
+	if (!empty($condition)) {
+		$query = "SELECT * FROM $tableName WHERE $condition";
+	} else {
+		$query = "SELECT * FROM $tableName";
+	}
+	$result = mysqli_query($conn, $query);
+	return $result->num_rows;
+}
 
 function checkImage($file)
 {

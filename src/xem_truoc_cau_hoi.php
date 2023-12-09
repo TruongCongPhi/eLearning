@@ -13,17 +13,10 @@ $data_question = get('lecture_questions', 'id=' . $_GET['question_id'] . '')
         <p class="fw-medium fs-5 mt-2"><?= $data_lecture['lecture_title'] ?></p>
     </div>
 </div>
-<div class="dropdown show">
-    <a class="btn btn-primary" href="bien_tap.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>">Trở lại</a>
-    <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Thêm Câu hỏi
-    </a>
-    <div class="dropdown-menu">
-        <a class="dropdown-item" href="cau_hoi_mot_dap_an.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>" target="">Câu hỏi 1 đáp án</a>
-        <a class="dropdown-item" href=' cau_hoi_nhieu_dap_an.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>' target="">Câu hỏi nhiều đáp án đáp án</a>
-        <a class="dropdown-item" href="cau_hoi_dien.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>" target="">Câu hỏi điền</a>
-    </div>
-</div>
+
+<a class="btn btn-primary" href="bien_tap.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>">Trở lại</a>
+
+
 <br><br>
 
 <div style="width: 60%;
