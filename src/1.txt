@@ -1,0 +1,15 @@
+<?php } elseif ($question['type'] == "fill") {
+                                ?>
+                                    <div class='input-group py-3 pe-3'>
+                                        <input name='answer_<?= $question['id'] ?>' type='text' class='form-control' value='<?= isset($answer) ? htmlspecialchars($answer) : '' ?>' placeholder="Điền đáp án">
+                                    </div>
+                                <?php
+                                } elseif ($question['type'] == "multiplechoice") {
+                                ?>
+
+                                    <div class='form-check p-3'>
+                                        <input class="form-check-input" name="answer_<?= $question['id'] ?>" value="<?= $data2['id'] ?>" type='checkbox' <?php (isset($answer) && in_array($data2['id'], $answer)) ? 'checked' : '' ?>>
+                                        <label class='form-check-label text-break' value=''><?= $data2['answer_name'] ?></label>
+                                    </div>
+                            <?php
+                                }

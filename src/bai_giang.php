@@ -1,17 +1,31 @@
 <?php include 'navbar.php';
-include '../function.php';
 isLogin2();
 checkKhoaHoc();
 
 $data = get('courses', 'id=' . $_GET['course_id'] . '');
 $lecture_data = getArray('lectures', 'course_id=' . $data['id'] . '');
+// $data2 = get('lecture_questions', 'id=' . $_GET['lecture_id'] . '');
+
+
 ?>
+
+<!-- truy van lay id_lecture -->
+<?php
+    $lecture = get('lecture_questions', '');
+
+    ?>
 
 <div class="d-flex align-items-center p-3 my-3 bg-purple rounded shadow">
     <div class="lh-1">
         <h2 class="mb-0 lh-1">Khóa học: <?= $data['course_title'] ?></h2>
         <p class="mt-2"><?= $data['course_desc'] ?></p>
+        <!-- nut back -->
+    <div class="que">
+        <a class="btn btn-primary" href="khoa_hoc.php">Trở lại</a>
     </div>
+    </div>
+
+    
 </div>
 
 <?php
@@ -34,13 +48,14 @@ if ($lecture_data && $lecture_data->num_rows > 0) {
                     }
             ?>
                     <div class="d-flex text-body-secondary border-bottom pt-3">
-                        <a href="#">
+                        <a href="quizz.php?lecture_id=<?= $lecture["lecture_id"] ?>&course_id=<?= $_GET['course_id']?>">
                             <img class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" src="<?= $srcIcon ?>" alt="Placeholder: 32x32" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false">
                         </a>
                         <div class="pb-4 mt-2 mb-0 small lh-sm w-100">
                             <div class="d-flex justify-content-between">
                                 <a href="view_bai_giang.php" class="text-dark text-decoration-none"><?= (isset($row_material['material_title']) ? $row_material['material_title'] : '') ?>
                                 </a>
+
                                 <div>
 
                                 </div>

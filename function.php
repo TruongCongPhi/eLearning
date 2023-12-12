@@ -119,7 +119,7 @@ function insert($tableName, $columnValueArray = [])
 		return false;
 }
 
-//update
+// //update
 // function update($tableName, $columnValueArray = [], $condition)
 // {
 // 	global $conn;
@@ -189,4 +189,20 @@ function checkImage($file)
 	} else {
 		return false;
 	}
+}
+// ham luu cac dap an dung
+
+function get_correct_answer($question_id){
+	global $conn;
+	$query = "SELECT * FROM `answers` WHERE question_id = $question_id AND is_correct = 1";
+	$result = mysqli_query($conn, $query);
+
+	$correct_answer = [];
+	while ($row = mysqli_fetch_assoc($result)) {
+		$correct_answer[] = $row['id'];
+	}
+
+
+	return $correct_answer;
+
 }

@@ -1,5 +1,4 @@
 <?php include 'navbar.php';
-include '../function.php';
 isLogin2();
 
 ?>
