@@ -29,7 +29,12 @@ function checkLogin($username, $password)
 		if ($row > 0) {
 			if ($username == $row['username'] && md5($password) == $row['password']) {
 				session_start();
+				$user_role_all = get('users', 'username="' . $username . '"')['role'];
+				$user_role_course = get('course_management', 'username="' . $username . '"')['role'];
+
 				$_SESSION['username'] = $username;
+				$_SESSION['role_all'] = $user_role_all;
+				$_SESSION['role_course'] = $user_role_course;
 				if ($username == 'admin') {
 					$_SESSION['quyen'] = 1;
 				} else {
@@ -162,6 +167,17 @@ function countt($tableName, $condition)
 	$result = mysqli_query($conn, $query);
 	return $result->num_rows;
 }
+function searchUser($name)
+{
+	global $conn;
+	$sql = "SELECT * FROM users WHERE username LIKE '$name'";
+	$result = $conn->query($sql);
+	if ($result->num_rows > 0) {
+		return $result;
+	} else {
+		return null;
+	}
+}
 
 function checkImage($file)
 {
@@ -185,6 +201,27 @@ function checkImage($file)
 		} else {
 			return false;
 		}
+	} else {
+		return false;
+	}
+}
+function uploadFile($file)
+{
+	$targetDirectory = "../uploads/";
+	$imgFileType = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+	$i = 1;
+	$newFileName = $file;
+	while (file_exists($targetDirectory . $newFileName)) {
+		$newFileName = pathinfo($file, PATHINFO_FILENAME) . "($i)." . $imgFileType;
+		$i++;
+	}
+
+	$uploadOk = move_uploaded_file($_FILES['anh']['tmp_name'], $targetDirectory . $newFileName);
+
+	if ($uploadOk) {
+		$imgPath = $targetDirectory . $newFileName;
+		return $imgPath;
 	} else {
 		return false;
 	}
