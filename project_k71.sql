@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 07, 2023 lúc 02:35 PM
+-- Thời gian đã tạo: Th12 14, 2023 lúc 04:49 AM
 -- Phiên bản máy phục vụ: 10.4.28-MariaDB
 -- Phiên bản PHP: 8.1.17
 
@@ -51,9 +51,8 @@ CREATE TABLE `courses` (
 --
 
 INSERT INTO `courses` (`id`, `course_title`, `course_desc`) VALUES
-(1, 'Công nghệ Web', 'đây là mô tả về khóa học'),
-(2, 'Mạng máy tính', NULL),
-(3, 'Nền tảng phát triển Web', NULL);
+(35, 'Công nghệ web', 'Đây là mô tả khóa học\r\n'),
+(36, 'Mạng máy tính', '');
 
 -- --------------------------------------------------------
 
@@ -64,17 +63,18 @@ INSERT INTO `courses` (`id`, `course_title`, `course_desc`) VALUES
 CREATE TABLE `course_management` (
   `id` int(11) NOT NULL,
   `course_id` int(11) DEFAULT NULL,
-  `username` varchar(255) DEFAULT NULL
+  `username` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `role` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `course_management`
 --
 
-INSERT INTO `course_management` (`id`, `course_id`, `username`) VALUES
-(0, 2, 'tk2'),
-(1, 1, 'tk1'),
-(2, 2, 'tk1');
+INSERT INTO `course_management` (`id`, `course_id`, `username`, `created_at`, `role`) VALUES
+(12, 35, 'tk1', '2023-12-13 17:00:00', 1),
+(22, 35, 'tk2', '2023-12-14 03:33:49', 0);
 
 -- --------------------------------------------------------
 
@@ -85,16 +85,20 @@ INSERT INTO `course_management` (`id`, `course_id`, `username`) VALUES
 CREATE TABLE `lectures` (
   `id` int(11) NOT NULL,
   `course_id` int(11) NOT NULL,
-  `lecture_title` varchar(255) NOT NULL
+  `lecture_title` varchar(255) NOT NULL,
+  `status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `lectures`
 --
 
-INSERT INTO `lectures` (`id`, `course_id`, `lecture_title`) VALUES
-(1, 1, 'Tuần 1'),
-(2, 1, 'Tuần 2');
+INSERT INTO `lectures` (`id`, `course_id`, `lecture_title`, `status`) VALUES
+(169, 35, 'Tuần 1', 0),
+(178, 35, 'Tuần 2', 0),
+(180, 36, 'Tuần 1', 1),
+(181, 36, 'Tuần 2', 0),
+(182, 36, 'Tuần 2', 0);
 
 -- --------------------------------------------------------
 
@@ -125,17 +129,24 @@ CREATE TABLE `materials` (
   `lecture_id` int(11) NOT NULL,
   `material_title` varchar(255) DEFAULT NULL,
   `type` varchar(50) DEFAULT NULL,
-  `path` varchar(255) DEFAULT NULL
+  `path` varchar(255) DEFAULT NULL,
+  `status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `materials`
 --
 
-INSERT INTO `materials` (`id`, `lecture_id`, `material_title`, `type`, `path`) VALUES
-(1, 1, 'Bài giảng pdf', 'pdf', 'pdf.pdf'),
-(2, 2, 'Bài giảng tuần 2', 'pdf', 'file.pdf'),
-(3, 2, 'Kiểm tra 1', 'quizz', NULL);
+INSERT INTO `materials` (`id`, `lecture_id`, `material_title`, `type`, `path`, `status`) VALUES
+(46, 169, 'bài giảng 1', 'ppt', '../uploads/Kết Quả Đăng Ký.pdf', 0),
+(53, 169, 'thông báo', 'notify', 'link', 1),
+(54, 169, 'Slide', 'pdf', 'gdgdg', 1),
+(55, 169, 'link', 'link', 'dgd', 0),
+(58, 169, 'document', 'document', NULL, 0),
+(60, 169, 'quizz', 'quizz', 'dgdg', 1),
+(61, 178, 'Bài giảng 1', 'pdf', '../uploads/Kết Quả Đăng Ký(1).pdf', 1),
+(62, 169, 'word', 'word', '../uploads/715105178_Trương Công Phi(2).docx', 1),
+(63, 169, 'ppt', 'ppt', '../uploads/metmoi - Copy.pptx', 1);
 
 -- --------------------------------------------------------
 
@@ -145,17 +156,18 @@ INSERT INTO `materials` (`id`, `lecture_id`, `material_title`, `type`, `path`) V
 
 CREATE TABLE `users` (
   `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `role` tinyint(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `users`
 --
 
-INSERT INTO `users` (`username`, `password`) VALUES
-('admin', 'c4ca4238a0b923820dcc509a6f75849b'),
-('tk1', 'c4ca4238a0b923820dcc509a6f75849b'),
-('tk2', 'c4ca4238a0b923820dcc509a6f75849b');
+INSERT INTO `users` (`username`, `password`, `role`) VALUES
+('admin', 'c4ca4238a0b923820dcc509a6f75849b', 2),
+('tk1', 'c4ca4238a0b923820dcc509a6f75849b', 0),
+('tk2', 'c4ca4238a0b923820dcc509a6f75849b', 0);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -217,31 +229,37 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT cho bảng `answers`
 --
 ALTER TABLE `answers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
 --
 -- AUTO_INCREMENT cho bảng `courses`
 --
 ALTER TABLE `courses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+
+--
+-- AUTO_INCREMENT cho bảng `course_management`
+--
+ALTER TABLE `course_management`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT cho bảng `lectures`
 --
 ALTER TABLE `lectures`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=183;
 
 --
 -- AUTO_INCREMENT cho bảng `lecture_questions`
 --
 ALTER TABLE `lecture_questions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT cho bảng `materials`
 --
 ALTER TABLE `materials`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
@@ -257,26 +275,26 @@ ALTER TABLE `answers`
 -- Các ràng buộc cho bảng `course_management`
 --
 ALTER TABLE `course_management`
-  ADD CONSTRAINT `course_management_ibfk_1` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`),
-  ADD CONSTRAINT `course_management_ibfk_2` FOREIGN KEY (`username`) REFERENCES `users` (`username`);
+  ADD CONSTRAINT `course_management_ibfk_1` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `course_management_ibfk_2` FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `lectures`
 --
 ALTER TABLE `lectures`
-  ADD CONSTRAINT `lectures_ibfk_1` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`);
+  ADD CONSTRAINT `lectures_ibfk_1` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`) ON DELETE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `lecture_questions`
 --
 ALTER TABLE `lecture_questions`
-  ADD CONSTRAINT `lecture_questions_ibfk_1` FOREIGN KEY (`lecture_id`) REFERENCES `lectures` (`id`);
+  ADD CONSTRAINT `lecture_questions_ibfk_1` FOREIGN KEY (`lecture_id`) REFERENCES `lectures` (`id`) ON DELETE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `materials`
 --
 ALTER TABLE `materials`
-  ADD CONSTRAINT `materials_ibfk_1` FOREIGN KEY (`lecture_id`) REFERENCES `lectures` (`id`);
+  ADD CONSTRAINT `materials_ibfk_1` FOREIGN KEY (`lecture_id`) REFERENCES `lectures` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
