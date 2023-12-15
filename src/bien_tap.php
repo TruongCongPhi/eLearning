@@ -7,12 +7,12 @@
  <!-- điều hướng -->
  <nav aria-label="breadcrumb">
      <ol class="breadcrumb">
-         <li class="breadcrumb-item"><a class="link-secondary" href="khoa_hoc.php">Trang chủ</a></li>
-         <li class="breadcrumb-item"><a class="link-secondary" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Khóa học:
+         <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="khoa_hoc.php">Trang chủ</a></li>
+         <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Khóa học:
                  <?= $data_course['course_title'] ?></a>
          </li>
 
-         <li class="breadcrumb-item"><a class="link-secondary" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>"><?= $data_lecture['lecture_title'] ?></a></li>
+         <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>"><?= $data_lecture['lecture_title'] ?></a></li>
          <li class="breadcrumb-item text-dark active" aria-current="page">Biên tập</li>
      </ol>
  </nav>
@@ -54,9 +54,9 @@
          <tbody class='table-group-divider'>
              <?php
                 if ($_SESSION['username'] == 'admin') {
-                    $data_question = getArray('lecture_questions', '');
+                    $data_question = getArray('lecture_questions', "lecture_id={$_GET['lecture_id']}");
                 } else {
-                    $data_question = getArray('lecture_questions', 'added_by="' . $_SESSION['username'] . '"');
+                    $data_question = getArray('lecture_questions', "lecture_id={$_GET['lecture_id']} AND added_by= '{$_SESSION['username']}'");
                 }
                 ?>
              <?php

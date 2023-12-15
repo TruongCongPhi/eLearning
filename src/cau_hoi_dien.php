@@ -7,13 +7,21 @@ $data_lecture = get('lectures', 'id=' . $_GET['lecture_id'] . '');
 <!-- điều hướng -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a class="link-secondary" href="khoa_hoc.php">Trang chủ</a></li>
-        <li class="breadcrumb-item"><a class="link-secondary" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Khóa học:
+        <li class="breadcrumb-item"><a
+                class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                href="khoa_hoc.php">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a
+                class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Khóa học:
                 <?= $data_course['course_title'] ?></a>
         </li>
 
-        <li class="breadcrumb-item"><a class="link-secondary" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>"><?= $data_lecture['lecture_title'] ?></a></li>
-        <li class="breadcrumb-item"><a class="link-secondary" href="bien_tap.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>">Biên
+        <li class="breadcrumb-item"><a
+                class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>"><?= $data_lecture['lecture_title'] ?></a></li>
+        <li class="breadcrumb-item"><a
+                class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                href="bien_tap.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>">Biên
                 tập</a></li>
         <li class="breadcrumb-item text-dark active" aria-current="page">Thêm câu hỏi điền</li>
     </ol>
@@ -25,7 +33,8 @@ $data_lecture = get('lectures', 'id=' . $_GET['lecture_id'] . '');
         <p class="fw-medium fs-5 mt-2"><?= $data_lecture['lecture_title'] ?></p>
     </div>
 </div>
-<a href="bien_tap.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>" class="btn btn-primary">Trở
+<a href="bien_tap.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>"
+    class="btn btn-primary">Trở
     lại</a>
 <?php
 if (isset($_POST['add_quiz'])) {
@@ -86,7 +95,8 @@ if (isset($_POST['add_quiz'])) {
     ?>
     <div class="form-group mb-3">
         <label for="name_quiz">Nhập tên câu hỏi</label>
-        <input type="text" value="<?= isset($_POST['ten_cau_hoi']) ? htmlspecialchars($_POST['ten_cau_hoi']) : '' ?>" required="required" class="form-control" id="name_quiz" name="ten_cau_hoi">
+        <input type="text" value="<?= isset($_POST['ten_cau_hoi']) ? htmlspecialchars($_POST['ten_cau_hoi']) : '' ?>"
+            required="required" class="form-control" id="name_quiz" name="ten_cau_hoi">
     </div>
     <div class="form-group mb-3">
         <label for="formFileSm" class="form-label">Upload ảnh từ máy tính:</label>
@@ -108,7 +118,8 @@ if (isset($_POST['add_quiz'])) {
     </div>
     <div class="form-group">
         <label for="name_quiz">Nhập đáp án</label>
-        <input type="text" value="<?= isset($_POST['dap_an_dien']) ? htmlspecialchars($_POST['dap_an_dien']) : '' ?>" required="required" class="form-control" name="dap_an_dien">
+        <input type="text" value="<?= isset($_POST['dap_an_dien']) ? htmlspecialchars($_POST['dap_an_dien']) : '' ?>"
+            required="required" class="form-control" name="dap_an_dien">
     </div>
 
     <br><br>

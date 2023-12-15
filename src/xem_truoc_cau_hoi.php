@@ -12,7 +12,8 @@ $data_question = get('lecture_questions', 'id=' . $_GET['question_id'] . '')
     </div>
 </div>
 
-<a class="btn btn-primary" href="bien_tap.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>">Trở lại</a>
+<a class="btn btn-primary"
+    href="bien_tap.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>">Trở lại</a>
 
 
 <br><br>
@@ -42,32 +43,32 @@ $data_question = get('lecture_questions', 'id=' . $_GET['question_id'] . '')
                 $is_correct_checked = ($data['is_correct'] == 1) ? "checked" : "";
                 if ($data_question['type'] == "single_choice") {
             ?>
-                    <div class="form-check p-3">
-                        <input class="form-check-input" name="flag" type="radio" <?php echo $is_correct_checked; ?>>
-                        <label class="form-check-label text-break"><?= $data['answer_name'] ?></label>
-                    </div>
-                <?php
+            <div class="form-check p-3">
+                <input class="form-check-input" name="flag" type="radio" <?php echo $is_correct_checked; ?>>
+                <label class="form-check-label text-break"><?= $data['answer_name'] ?></label>
+            </div>
+            <?php
                 } elseif ($data_question['type'] == "fill") {
                 ?>
-                    <div class='input-group py-3 pe-3'>
-                        <div class='input-group-text'>
-                            <input name='' value='' checked type='checkbox' readonly>
-                        </div>
-                        <input name='' type='text' class='form-control' value='<?= $data['answer_name'] ?>' readonly>
-                    <?php
+            <div class='input-group py-3 pe-3'>
+                <div class='input-group-text'>
+                    <input name='' value='' checked type='checkbox' readonly>
+                </div>
+                <input name='' type='text' class='form-control' value='<?= $data['answer_name'] ?>' readonly>
+                <?php
                 } elseif ($data_question['type'] == "multiplechoice") {
 
                     ?>
-                        <div class='form-check p-3'>
-                            <input class="form-check-input" value='' type='checkbox' <?php echo $is_correct_checked; ?>>
-                            <label class='form-check-label text-break' value=''><?= $data['answer_name'] ?></label>
-                        </div>
+                <div class='form-check p-3'>
+                    <input class="form-check-input" value='' type='checkbox' <?php echo $is_correct_checked; ?>>
+                    <label class='form-check-label text-break' value=''><?= $data['answer_name'] ?></label>
+                </div>
                 <?php
                 }
             }
 
                 ?>
-                    </div>
+            </div>
         </div>
     </div>
 

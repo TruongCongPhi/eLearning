@@ -76,8 +76,8 @@ function get($table, $condition)
 	}
 }
 
-//lấy nhiều bản ghi, mặc định là 50
-function getArray($tableName, $condition, $limit = 50)
+//lấy nhiều bản ghi, mặc định là 200
+function getArray($tableName, $condition, $limit = 200)
 {
 	global $conn;
 	if (empty($condition)) {
@@ -93,11 +93,11 @@ function getArray($tableName, $condition, $limit = 50)
 		return null;
 	}
 }
-function getArrayOrder($tableName, $condition, $limit)
+function getArrayOrder($tableName, $condition1, $condition2, $limit)
 {
 	global $conn;
 
-	$query = "SELECT * FROM $tableName ORDER BY $condition LIMIT $limit";
+	$query = "SELECT * FROM $tableName WHERE $condition1 ORDER BY $condition2 LIMIT $limit";
 	//var_dump($query);
 	$result = mysqli_query($conn, $query);
 	if ($result && $result->num_rows > 0) {

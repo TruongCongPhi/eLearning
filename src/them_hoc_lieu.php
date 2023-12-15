@@ -2,34 +2,35 @@
 include 'navbar.php';
 checkKhoaHoc();
 
-$data = get('courses', 'id=' . $_GET['course_id'] . '');
-$lecture_data = get('lectures', 'id=' . $_GET['lecture_id']  . '');
-
+$data = get('courses', 'id=' . $_GET['course_id'] . ''); // dữ liệu khóa học
+$lecture_data = get('lectures', 'id=' . $_GET['lecture_id']  . ''); //đữ liệu bài giảng
 ?>
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $type = $_POST['type'];
     $check = 1;
     $path = null;
+    $postion_current = getArrayOrder('materials', "lecture_id={$_GET['lecture_id']}", 'position DESC', 1); // truy vấn vị trí thứ tự hiển thị cuối cùng học liệu theo bài giảng
+    (is_null($postion_current)) ? $postion_new = 1 : $postion_new = $postion_current->fetch_assoc()['position'] + 1; // Chưa có thì stt = 1, có rồi thì +1
 
-    if ($type == 'link') {
+    if ($type == 'link') { // loại : link thì địa chỉ là đường link
         if (!empty($_POST["link"])) {
             $path = $_POST['link'];
         } else {
-            $mess_link = true;
-            $check = 0;
+            $mess_link = true; // biến thông báo lỗi 
+            $check = 0; // biến kiểm tra thêm học liệu
         }
-    } elseif ($type != 'link' && empty($_FILES["file"]['name'])) {
+    } elseif ($type != 'link' && empty($_FILES["file"]['name'])) { // khác link và không upload file thì báo lỗi 
         $mess_file = true;
         $check = 0;
-    } elseif ($type != 'link' && !empty($_FILES["file"]['name'])) {
+    } elseif ($type != 'link' && !empty($_FILES["file"]['name'])) { // khác link và đã upload file => lưu vào Folder: uploads, lấy địa chỉ file 
         $targetDirectory = "../uploads/";
-        $imgFileType = strtolower(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
+        $fileType = strtolower(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
 
         $j = 1;
         $newFileName = $_FILES["file"]["name"];
         while (file_exists($targetDirectory . $newFileName)) {
-            $newFileName = pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME) . "($j)." . $imgFileType;
+            $newFileName = pathinfo($_FILES["file"]["name"], PATHINFO_FILENAME) . "($j)." . $fileType;
             $j++;
         }
 
@@ -41,13 +42,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $check = 0;
         }
     }
-    if ($check) {
+    if ($check) { // không có lỗi gì check = true thì lưu vào csdl
         $data_material = [
             'lecture_id' => $_GET['lecture_id'],
             'material_title' => $_POST['material_title'],
             'type' => $_POST['type'],
             'path' => $path,
-            'status' => $_POST['status_material']
+            'status' => $_POST['status_material'],
+            'position' => $postion_new,
         ];
         $insert_material = insert('materials', $data_material);
 
@@ -65,8 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!-- điều hướng -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a class="link-secondary" href="khoa_hoc.php">Trang chủ</a></li>
-        <li class="breadcrumb-item"><a class="link-secondary" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Khóa học:
+        <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="khoa_hoc.php">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Khóa học:
                 <?= $data['course_title'] ?></a>
         </li>
 
@@ -87,7 +89,7 @@ if (isset($mess)) {
     echo $mess;
 }
 ?>
-<h2>Thêm bài giảng</h2>
+<h3>Thêm học liệu</h3>
 <form method="post" enctype="multipart/form-data">
     <div class="my-3 p-3 bg-body border rounded shadow-sm">
         <div class="d-flex text-body-secondary border-bottom pt-3">

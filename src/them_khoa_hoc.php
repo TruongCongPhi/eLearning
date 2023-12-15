@@ -9,7 +9,7 @@ if ($role_all < 2) {
     <!-- điều hướng -->
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a class="link-secondary" href="khoa_hoc.php">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="khoa_hoc.php">Trang chủ</a></li>
             <li class="breadcrumb-item text-dark active" aria-current="page">Thêm khóa học</li>
         </ol>
     </nav>
