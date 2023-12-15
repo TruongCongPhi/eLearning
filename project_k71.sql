@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 14, 2023 lúc 04:49 AM
+-- Thời gian đã tạo: Th12 15, 2023 lúc 03:55 PM
 -- Phiên bản máy phục vụ: 10.4.28-MariaDB
 -- Phiên bản PHP: 8.1.17
 
@@ -34,6 +34,36 @@ CREATE TABLE `answers` (
   `is_correct` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `answers`
+--
+
+INSERT INTO `answers` (`id`, `question_id`, `answer_name`, `is_correct`) VALUES
+(93, 33, '1234', 0),
+(94, 33, '12', 1),
+(95, 34, '1', 0),
+(96, 34, '2', 1),
+(97, 34, '3', 1),
+(99, 36, '1', 0),
+(100, 36, '2', 1),
+(101, 37, 'phi', 1),
+(102, 38, '1', 1),
+(103, 38, '2', 0),
+(104, 39, '3', 1),
+(105, 39, '4', 0),
+(106, 40, '434', 0),
+(107, 40, '34t3', 1),
+(108, 41, '434', 0),
+(109, 41, '34t3', 1),
+(110, 42, '434', 0),
+(111, 42, '34t3', 1),
+(112, 43, '434', 0),
+(113, 43, '34t3', 1),
+(114, 44, 'fdh', 1),
+(115, 44, 'fh', 0),
+(116, 44, 'fdh', 0),
+(117, 44, 'dfh', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -52,7 +82,7 @@ CREATE TABLE `courses` (
 
 INSERT INTO `courses` (`id`, `course_title`, `course_desc`) VALUES
 (35, 'Công nghệ web', 'Đây là mô tả khóa học\r\n'),
-(36, 'Mạng máy tính', '');
+(37, 'Quản trị mạng', 'mô tả');
 
 -- --------------------------------------------------------
 
@@ -73,8 +103,9 @@ CREATE TABLE `course_management` (
 --
 
 INSERT INTO `course_management` (`id`, `course_id`, `username`, `created_at`, `role`) VALUES
-(12, 35, 'tk1', '2023-12-13 17:00:00', 1),
-(22, 35, 'tk2', '2023-12-14 03:33:49', 0);
+(12, 35, 'tk1', '2023-12-13 17:00:00', 0),
+(22, 35, 'tk2', '2023-12-14 03:33:49', 0),
+(32, 37, 'tk2', '2023-12-14 16:01:24', 1);
 
 -- --------------------------------------------------------
 
@@ -94,11 +125,9 @@ CREATE TABLE `lectures` (
 --
 
 INSERT INTO `lectures` (`id`, `course_id`, `lecture_title`, `status`) VALUES
-(169, 35, 'Tuần 1', 0),
-(178, 35, 'Tuần 2', 0),
-(180, 36, 'Tuần 1', 1),
-(181, 36, 'Tuần 2', 0),
-(182, 36, 'Tuần 2', 0);
+(169, 35, 'Tuần 1', 1),
+(184, 35, 'Tuần 2', 0),
+(185, 35, 'Tuần 3', 1);
 
 -- --------------------------------------------------------
 
@@ -118,6 +147,23 @@ CREATE TABLE `lecture_questions` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `lecture_questions`
+--
+
+INSERT INTO `lecture_questions` (`id`, `lecture_id`, `question_name`, `image`, `level`, `type`, `status`, `added_by`, `created_at`) VALUES
+(33, 169, 'abc', '', 1, 'single_choice', 1, 'admin', '2023-12-14 14:47:33'),
+(34, 169, 'sdfdsf', '', 1, 'multiplechoice', 1, 'admin', '2023-12-14 14:47:47'),
+(36, 184, 'hihih', '', 1, 'single_choice', 1, 'admin', '2023-12-15 11:01:04'),
+(37, 169, 'dgsgsghsdg', '', 1, 'fill', 1, 'admin', '2023-12-15 11:52:22'),
+(38, 169, 'hhi', '', 1, 'single_choice', 1, 'admin', '2023-12-15 14:24:37'),
+(39, 169, 'hhirehrfh', '', 1, 'single_choice', 1, 'admin', '2023-12-15 14:24:45'),
+(40, 169, 'hhirehrfhrheh', '', 1, 'single_choice', 1, 'admin', '2023-12-15 14:24:52'),
+(41, 169, 'hhirehrfhrheh', '', 1, 'single_choice', 1, 'admin', '2023-12-15 14:24:53'),
+(42, 169, 'hhirehrfhrheh', '', 1, 'single_choice', 1, 'admin', '2023-12-15 14:24:54'),
+(43, 169, 'hhirehrfhrheh', '', 1, 'single_choice', 1, 'admin', '2023-12-15 14:24:55'),
+(44, 169, 'tdry', '', 1, 'single_choice', 1, 'admin', '2023-12-15 14:25:17');
+
 -- --------------------------------------------------------
 
 --
@@ -130,23 +176,18 @@ CREATE TABLE `materials` (
   `material_title` varchar(255) DEFAULT NULL,
   `type` varchar(50) DEFAULT NULL,
   `path` varchar(255) DEFAULT NULL,
-  `status` tinyint(1) NOT NULL
+  `status` tinyint(1) NOT NULL,
+  `position` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `materials`
 --
 
-INSERT INTO `materials` (`id`, `lecture_id`, `material_title`, `type`, `path`, `status`) VALUES
-(46, 169, 'bài giảng 1', 'ppt', '../uploads/Kết Quả Đăng Ký.pdf', 0),
-(53, 169, 'thông báo', 'notify', 'link', 1),
-(54, 169, 'Slide', 'pdf', 'gdgdg', 1),
-(55, 169, 'link', 'link', 'dgd', 0),
-(58, 169, 'document', 'document', NULL, 0),
-(60, 169, 'quizz', 'quizz', 'dgdg', 1),
-(61, 178, 'Bài giảng 1', 'pdf', '../uploads/Kết Quả Đăng Ký(1).pdf', 1),
-(62, 169, 'word', 'word', '../uploads/715105178_Trương Công Phi(2).docx', 1),
-(63, 169, 'ppt', 'ppt', '../uploads/metmoi - Copy.pptx', 1);
+INSERT INTO `materials` (`id`, `lecture_id`, `material_title`, `type`, `path`, `status`, `position`) VALUES
+(73, 169, 'bài giảng 1', 'pdf', '../uploads/Yeu cau thuc hanh(1).pdf', 1, 3),
+(80, 169, 'bg2', 'pdf', '../uploads/Yeu cau thuc hanh(3).pdf', 1, 4),
+(81, 169, 'Quizz', 'quizz', NULL, 1, 5);
 
 -- --------------------------------------------------------
 
@@ -229,37 +270,37 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT cho bảng `answers`
 --
 ALTER TABLE `answers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
 
 --
 -- AUTO_INCREMENT cho bảng `courses`
 --
 ALTER TABLE `courses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT cho bảng `course_management`
 --
 ALTER TABLE `course_management`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT cho bảng `lectures`
 --
 ALTER TABLE `lectures`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=183;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=186;
 
 --
 -- AUTO_INCREMENT cho bảng `lecture_questions`
 --
 ALTER TABLE `lecture_questions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT cho bảng `materials`
 --
 ALTER TABLE `materials`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
