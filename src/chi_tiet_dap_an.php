@@ -19,15 +19,13 @@ print_r($_SESSION['quizz_session']);
 
 <div class="d-flex align-items-center justify-content-center m-auto p-3 my-3 bg-purple rounded shadow"
     style="width: 60%;">
-    <input type="hidden" name="lecture_id" value="<?= $_GET['lecture_id'] ?>">
-    <input type="hidden" name="history_id" value="<?= $id ?>">
     <!-- Your content goes here -->
     <div class="row">
         <?php
-    $i = 1;
-    foreach ($_SESSION['quizz_session'] as $key => $id) {
-        $question_data = get('lecture_questions', "lecture_id={$_GET['lecture_id']} AND id={$key}");
-    ?>
+        $i = 1;
+        foreach ($_SESSION['quizz_session'] as $key => $selected_answer_id) {
+            $question_data = get('lecture_questions', "lecture_id={$_GET['lecture_id']} AND id={$key}");
+        ?>
 
         <div class="col-12 mb-3">
             <div class="card rounded-4 p-3 mb-3">
@@ -41,14 +39,14 @@ print_r($_SESSION['quizz_session']);
 
                 <?php
                     $data_answer = getArray('answers', 'question_id=' . $key . '');
-                    foreach ($data_answer as $row_answer) {
 
+                    while ($row_answer = mysqli_fetch_assoc($data_answer)) {
                         // dap an dung                           
                         if ($question_data['type'] == "single_choice") {
                     ?>
                 <div class="form-check p-3">
                     <input class="form-check-input" name="flag" type="radio"
-                        <?= ($id == $row_answer['id']) ? "checked" : '' ?>>
+                        <?= ($selected_answer_id == $row_answer['id']) ? "checked" : '' ?>>
                     <label class="form-check-label text-break"><?= $row_answer['answer_name'] ?></label>
                 </div>
                 <?php
