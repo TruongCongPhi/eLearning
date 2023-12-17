@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 15, 2023 lúc 03:55 PM
+-- Thời gian đã tạo: Th12 16, 2023 lúc 05:44 AM
 -- Phiên bản máy phục vụ: 10.4.28-MariaDB
 -- Phiên bản PHP: 8.1.17
 
@@ -106,6 +106,21 @@ INSERT INTO `course_management` (`id`, `course_id`, `username`, `created_at`, `r
 (12, 35, 'tk1', '2023-12-13 17:00:00', 0),
 (22, 35, 'tk2', '2023-12-14 03:33:49', 0),
 (32, 37, 'tk2', '2023-12-14 16:01:24', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `history_quizz`
+--
+
+CREATE TABLE `history_quizz` (
+  `id` int(11) NOT NULL,
+  `lecture_id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `score` float NOT NULL,
+  `time_begin` varchar(50) NOT NULL,
+  `time_finish` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -236,6 +251,14 @@ ALTER TABLE `course_management`
   ADD KEY `username_id` (`username`);
 
 --
+-- Chỉ mục cho bảng `history_quizz`
+--
+ALTER TABLE `history_quizz`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `history_quizz_ibfk_1` (`lecture_id`),
+  ADD KEY `history_quizz_ibfk_2` (`username`);
+
+--
 -- Chỉ mục cho bảng `lectures`
 --
 ALTER TABLE `lectures`
@@ -283,6 +306,12 @@ ALTER TABLE `courses`
 --
 ALTER TABLE `course_management`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+
+--
+-- AUTO_INCREMENT cho bảng `history_quizz`
+--
+ALTER TABLE `history_quizz`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=132;
 
 --
 -- AUTO_INCREMENT cho bảng `lectures`

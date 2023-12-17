@@ -252,7 +252,7 @@ if ($lecture_data && $lecture_data->num_rows > 0) {
                             switch ($row_material['type']) { // hiển thị icon theo type
                                 case "quizz":
                                     $srcIcon = "../images/quizz.png";
-                                    $srcPath = "quizz.php?course={$_GET['course_id']}&lecture_id={$row_lecture['id']}";
+                                    $srcPath = "lich_su_quizz.php?course_id={$_GET['course_id']}&lecture_id={$row_lecture['id']}";
                                     break;
                                 case "link":
                                     $srcIcon = "../images/link.png";

@@ -1,126 +1,140 @@
-<?php include 'navbar.php'   ?>
-<!-- nut back -->
-<div class="que">
-    <a class="btn btn-primary" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Trở lại</a>
-</div>
-<!-- Khung hien thi cau hoi quizz -->
+<?php include 'navbar.php';
+$data_course = get('courses', 'id=' . $_GET['course_id'] . '');
+$data_lecture = get('lectures', 'id=' . $_GET['lecture_id'] . '');
+if (isset($_SESSION['form_submitted']) && $_SESSION['form_submitted'] == false) {
+    include '404_error.php';
+} else {
+    date_default_timezone_set('Asia/Ho_Chi_Minh'); // lấy mũi giờ thời gian 
+    $time_begin = date('H:i:s d-m-Y');
+    $lich_su = [
+        'lecture_id' =>  $_GET['lecture_id'],
+        'username' => $_SESSION["username"],
+        'score' => 0,
+        'time_begin' => $time_begin
+    ];
+    insert('history_quizz', $lich_su);
+    $id = mysqli_insert_id($conn); // lấy id của quizz đang làm
+?>
 
-<form action="" method="post">
-    <div class="d-flex align-items-center justify-content-center m-auto p-3 my-3 bg-purple rounded shadow" style="width: 60%;">
-        <!-- Your content goes here -->
-        <?php
-        $data = getArray('lecture_questions', 'lecture_id=' . $_GET['lecture_id']);
-        ?>
-        <div class="row">
-
-            <?php $i = 1;
-            foreach ($data as $question) :
-            ?>
-                <div class="col-12 mb-3">
-                    <div class="card rounded-4 p-3">
-                        <!-- HIen thi cau hoi -->
-                        <h5 class="card-title">Câu <?= $i++ ?>: <?= $question["question_name"] ?></h5>
-
-                        <!-- Anh cau hoi -->
-                        <div class="form-group">
-                            <img src='<?= (!is_null($question['image'])) ? $question['image'] : '' ?>' height='200px'>
-                        </div>
-
-                        <?php
-                        $data_answer = getArray('answers', 'question_id=' . $question["id"] . '');
-                        while ($data2 = mysqli_fetch_assoc($data_answer)) {
-                            // dap an dung                           
-                            if ($question['type'] == "single_choice") {
-                        ?>
-                                <div class="form-check p-3">
-                                    <!-- gan cho moi dap an 1 value la id trong bang answer  -->
-                                    <input class="form-check-input" name="choice_<?= $question['id'] ?>" type="radio" value="<?= $data2['id'] ?>">
-                                    <label class="form-check-label text-break"><?= $data2['answer_name'] ?></label>
-                                </div>
-                            <?php
-                            } elseif ($question['type'] == "multiplechoice") {
-                            ?>
-
-                                <div class='form-check p-3'>
-                                    <input class="form-check-input" name="choice_<?= $question['id'] ?>[]" value="<?= $data2['id'] ?>" type='checkbox'>
-                                    <label class='form-check-label text-break' value=''><?= $data2['answer_name'] ?></label>
-                                </div>
-
-                            <?php
-                            } else { ?>
-                                <div class="form-check p-3">
-                                    <!-- gan cho moi dap an 1 value la id trong bang answer  -->
-                                    <label class='form-label'>Nhập đáp án:</label>
-                                    <input class="form-control" name="fill_<?= $question['id'] ?>" type="text">
-
-                                </div><?php
-                                    }
-                                } ?>
-
-
-                    </div>
-                </div>
-
-
-            <?php endforeach; ?>
+    <div class="d-flex align-items-center p-3 my-3 bg-purple rounded shadow">
+        <div class="lh-1">
+            <h2 class="mb-0 lh-1">Khóa học: <?= $data_course['course_title'] ?></h2>
+            <p class="fw-medium fs-5 mt-2"><?= $data_lecture['lecture_title'] ?></p>
         </div>
     </div>
-    <input style="position: fixed;left: 90%;top: 50vh;" id="nopBaiQuiz" type="submit" class="btn btn-info" name="submit" value="Nộp bài">
-</form>
+    <!-- Khung hien thi cau hoi quizz -->
 
+    <form id="id_form" action="show_ket_qua.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>" method="post">
+        <div class="d-flex align-items-center justify-content-center m-auto p-3 my-3 bg-purple rounded shadow" style="width: 60%;">
+            <!-- lưu id bài giảng và id quizz truyền qua form -->
+            <input type="hidden" name="lecture_id" value="<?= $_GET['lecture_id'] ?>">
+            <input type="hidden" name="history_id" value="<?= $id ?>">
+
+            <?php
+            $data = getArray('lecture_questions', "lecture_id={$_GET['lecture_id']} ORDER BY RAND()", 5);
+            ?>
+            <div class="row">
+
+                <?php $i = 1;
+                $ds_question = [];
+
+                foreach ($data as $question) :
+                    $ds_question[] = $question['id'];
+                ?>
+                    <div class="col-12 mb-3">
+                        <div class="card rounded-4 p-3">
+                            <h5 class="card-title">Câu <?= $i++ ?>: <?= $question["question_name"] ?></h5>
+
+                            <div class="form-group">
+                                <img src='<?= $question['image'] ?>' height='200px'>
+                            </div>
+
+                            <?php
+                            $data_answer = getArray('answers', 'question_id=' . $question["id"] . '');
+                            while ($data2 = mysqli_fetch_assoc($data_answer)) {
+
+                                // dap an dung                           
+                                if ($question['type'] == "single_choice") {
+                            ?>
+                                    <div class="form-check p-3">
+                                        <!--  -->
+                                        <input class="form-check-input" name="choice_<?= $question['id'] ?>" type="radio" value="<?= $data2['id'] ?>">
+                                        <label class="form-check-label text-break"><?= $data2['answer_name'] ?></label>
+                                    </div>
+                                <?php
+                                } elseif ($question['type'] == "multiplechoice") {
+                                ?>
+
+                                    <div class='form-check p-3'>
+                                        <input class="form-check-input" name="choice_<?= $question['id'] ?>[]" value="<?= $data2['id'] ?>" type='checkbox'>
+                                        <label class='form-check-label text-break' value=''><?= $data2['answer_name'] ?></label>
+                                    </div>
+
+                                <?php
+                                } else { ?>
+                                    <div class="form-check p-3">
+                                        <label class='form-label'>Nhập đáp án:</label>
+                                        <input class="form-control" name="fill_<?= $question['id'] ?>" type="text">
+                                    </div><?php
+                                        }
+                                    } ?>
+                        </div>
+                    </div>
+
+                <?php
+                    $_SESSION['ds_question'] = $ds_question;
+                endforeach; ?>
+            </div>
+        </div>
+        <div style="position: fixed;left: 87%;top: 40vh;" id="countdown"></div>
+        <button style="position: fixed;left: 90%;top: 50vh;" data-bs-toggle="modal" data-bs-target="#cf" type="button" class="btn btn-info">Nộp
+            bài</button>
+        <div class="modal" id="cf" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Nộp bài</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Bạn sẽ không thể thay đổi sau khi nộp bài</p>
+                    </div>
+                    <div class="modal-footer justify-content-between mx-5">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Quay lại</button>
+                        <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Nộp bài</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+<?php  } ?>
 
 <?php include 'footer.php' ?>
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+<script>
+    window.addEventListener('beforeunload', function(e) {
+        // If the form was not submitted, set form_submitted to true before leaving the page
+        <?php if (!$_SESSION['form_submitted']) : ?>
+            <?php $_SESSION['form_submitted'] = true; ?>
+        <?php endif; ?>
+    });
+    // Thời gian bắt đầu làm bài: 10 phút
+    var thoiGianLamBai = 20; // đơn vị là giây
+    var target_date = new Date().getTime() + thoiGianLamBai * 1000; // thời điểm kết thúc làm bài
 
-    foreach ($_POST as $key => $value) {
+    var countdown = document.getElementById('countdown');
 
-        if (strpos($key, "choice_") !== false) {
-            $question_id = substr($key, 7); // Lấy id của câu hỏi từ tên trường
-            $user_answer = is_array($value) ? implode(",", $value) : $value; // Nếu là multiple choice, chuyển thành chuỗi
+    setInterval(function() {
 
-            // Truy vấn để kiểm tra xem câu trả lời có đúng hay không
-            $lecture_data = get('lecture_questions', "id={$question_id} ");
+        var current_date = new Date().getTime(); //thời gian hiện tại
+        var seconds_left = Math.max(0, Math.floor((target_date - current_date) /
+            1000)); // Đảm bảo không hiển thị số âm
 
-
-            $sql = "SELECT * FROM answers WHERE question_id = $question_id AND id IN ($user_answer)";
-            $result = $conn->query($sql);
-
-            $tong = countt('answers', "question_id={$question_id} AND is_correct = 1");
-            $i = 0;
-            // Kiểm tra câu trả lời và xử lý kết quả
-            while ($row = $result->fetch_assoc()) {
-
-                if ($row["is_correct"] == 1) {
-                    $check = true;
-                    $i++;
-                } else {
-                    $check = false;
-                    break;
-                }
-            }
-
-            if ($i != $tong) {
-                $check = false;
-            }
-
-            if ($check) {
-                echo "Câu hỏi" . $question_id . "đúng<br>";
-            } else  echo "Câu hỏi" . $question_id . "sai<br>";
-        } elseif (strpos($key, "fill_") !== false) {
-            $question_id = substr($key, 5); // Lấy id của câu hỏi từ tên trường
-            $user_answer = $value;
-
-            $check_fill = get('answers', "question_id = $question_id AND answer_name = '$user_answer'");
-            if (is_null($check_fill)) {
-                echo "Câu hỏi $question_id: sai<br>";
-            } else {
-                echo "Câu hỏi $question_id: đúng<br>";
-            }
+        var minutes = Math.floor(seconds_left / 60);
+        var seconds = seconds_left % 60;
+        if (seconds_left <= 0) {
+            document.getElementById('id_form').submit();
         }
-    }
-
-    // Đóng kết nối
-    $conn->close();
-}
-?>
+        countdown.innerHTML = '<span class="fs-4 fw-bold"> Thời gian: ' + minutes + ":" + seconds + '</span>';
+    }, 1000);
+</script>
