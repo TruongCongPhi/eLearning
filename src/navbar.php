@@ -48,10 +48,70 @@ $role_course = $_SESSION['role_course'];
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
                             <li><a class="dropdown-item" href="dang_xuat.php">Đăng xuất</a></li>
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#model_pass_edit">Đổi
+                                    mật khẩu</a></li>
                         </ul>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+
+
+    <!-- The Modal đổi password-->
+    <div class="modal" id="model_pass_edit">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-4">Thay đổi mật khẩu</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="">
+                    <div class="modal-body">
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Mật khẩu hiện tại:</span>
+                            <input type="password" class="form-control" value="" name="pass_old">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Mật khẩu mới:</span>
+                            <input type="password" class="form-control" value="" name="pass_new">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Nhập lại mật khẩu mới:</span>
+                            <input type="password" class="form-control" value="" name="pass_new_1">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" name="submit" class="btn btn-primary">Cập
+                            nhật</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <?php
+    if (isset($_POST['submit'])) {
+        $pass = get('users', "username= '{$username}'")['password'];
+        $pass_old = $_POST['pass_old'];
+        $pass_new = $_POST['pass_new'];
+        $pass_new_1 = $_POST['pass_new_1'];
+
+        if (md5($pass_old) != $pass) {
+            echo '<div class="alert alert-warning d-flex align-items-center" role="alert"">Mật khẩu hiện tại không đúng. Vui lòng thử lại</div>';
+        } elseif ($pass_new_1 != $pass_new) {
+            echo '<div class="alert alert-warning d-flex align-items-center" role="alert"">Mật khẩu nhập lại không trùng khớp.Hãy thử lại</div>';
+        } else {
+
+
+            $update_pass = update('users', "username= '{$username}'", ['password' => md5('{$pass_new}')]);
+
+            if ($update_pass) {
+                echo '<div class="alert alert-success  " role="alert">Đổi mật khẩu thành công</div>';
+            }
+        }
+    }
+
+    ?>
+
     <div class="container" style="min-height: 100vh;">

@@ -93,6 +93,30 @@ function getArray($tableName, $condition, $limit = 200)
 		return null;
 	}
 }
+function getJoin($selectFields, $fromTable, $joins, $conditions)
+{
+	global $conn;
+	$selectClause = implode(', ', $selectFields);
+	$fromClause = $fromTable;
+	$joinClause = implode(' ', $joins);
+	$whereClause = !empty($conditions) ? "WHERE " . implode(' AND ', $conditions) : '';
+
+	$query = "SELECT $selectClause FROM $fromClause $joinClause $whereClause";
+
+	$result = mysqli_query($conn, $query);
+
+	if ($result && $result->num_rows > 0) {
+		$data = array();
+		while ($row = $result->fetch_assoc()) {
+			$data[] = $row;
+		}
+		return $data;
+	} else {
+		return null;
+	}
+}
+
+
 function getArrayOrder($tableName, $condition1, $condition2, $limit)
 {
 	global $conn;
@@ -124,7 +148,7 @@ function insert($tableName, $columnValueArray = [])
 		return false;
 }
 //update
-function update($tableName, $columnValueArray = [], $condition)
+function update($tableName, $condition, $columnValueArray = [])
 {
 	global $conn;
 	$statement = '';

@@ -24,19 +24,22 @@ if (isset($_POST['xoa'])) {
         if ($username == 'admin') {
             $courses = getArray('courses', '');
         } else {
-            $query = "SELECT courses.*
-				FROM courses
-				JOIN course_management ON courses.id = course_management.course_id
-				WHERE course_management.username = '$username' ";
-            $result = mysqli_query($conn, $query);
-            if ($result && $result->num_rows > 0) {
-                $courses = [];
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $courses[] = $row;
-                }
-            } else {
-                $courses = null;
-            }
+
+            $select = [
+                'courses.*'
+            ];
+
+            $fromTable = 'courses';
+
+            $joins = [
+                'JOIN course_management ON courses.id = course_management.course_id'
+            ];
+
+            $conditions = [
+                "course_management.username ='{$username}'"
+            ];
+
+            $courses = getJoin($select, $fromTable, $joins, $conditions);
         }
         ?>
 

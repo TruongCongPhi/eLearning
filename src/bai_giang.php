@@ -6,7 +6,7 @@ $data = get('courses', 'id=' . $_GET['course_id'] . '');
 $lecture_data = getArray('lectures', 'course_id=' .  $_GET['course_id'] . '');
 // cập nhật thông tin khóa học
 if (isset($_POST['update_course'])) {
-    $update_course = update('courses', ['course_title' => $_POST['course_title'], 'course_desc' => $_POST['course_desc']], "id={$_GET['course_id']}");
+    $update_course = update('courses', "id={$_GET['course_id']}", ['course_title' => $_POST['course_title'], 'course_desc' => $_POST['course_desc']]);
     if ($update_course) {
         $mess = '<div class="alert alert-success d-flex align-items-center" role="alert">Cập nhật thành công!</div>';
         header("location: bai_giang.php?course_id={$_GET['course_id']}");
@@ -27,7 +27,7 @@ if (isset($_POST['add_lecture'])) {
 // cập nhật ẨN / HIỆN bài giảng  
 if (isset($_POST['status_lecture_update'])) {
     $id_lecture_status = explode("-", $_POST['status_lecture_update']);
-    $status_lecture_update = update('lectures', ['status' => $id_lecture_status[1]], "id={$id_lecture_status[0]}");
+    $status_lecture_update = update('lectures', "id={$id_lecture_status[0]}", ['status' => $id_lecture_status[1]]);
     if ($status_lecture_update) {
         header("location: bai_giang.php?course_id={$_GET['course_id']}");
     }
@@ -40,7 +40,7 @@ if (isset($_POST['lecture_delete'])) {
 // cập nhật ẨN / HIỆN học liệu 
 if (isset($_POST['status_material_update'])) {
     $id_material_status = explode("-", $_POST['status_material_update']);
-    update('materials', ['status' => $id_material_status[1]], "id={$id_material_status[0]}");
+    update('materials', "id={$id_material_status[0]}", ['status' => $id_material_status[1]]);
     header("location: bai_giang.php?course_id={$_GET['course_id']}");
 }
 // Xóa học liệu
@@ -77,7 +77,7 @@ if (isset($_POST['position_update'])) {
     $position_current = get('materials', "id={$string_post[0]}")['position']; // vị trí hiện tại 
 
     // cập nhật vị trí cần sắp xếp và các vị trí khác
-    $update_this = update('materials', ["position" => $position_new], "id={$string_post[0]}");
+    $update_this = update('materials', "id={$string_post[0]}", ["position" => $position_new]);
     if ($position_current  > $position_new) { // nếu vị trí hiện tại > vị trí mới : từ vị trí mới -> vị trí hiện tại( BỎ QUA VỊ TRÍ HIỆN TẠI ) tại tăng +1  
         $update_other = "UPDATE materials 
         SET position = position + 1
@@ -301,14 +301,15 @@ if ($lecture_data && $lecture_data->num_rows > 0) {
                     <a href="<?= $srcPath ?>"
                         class=" text-decoration-none <?= (($role_course == 1  || $role_all) == 2 && $row_material['status'] == 0) ? "text-warning" : "text-dark" ?>"><?= (isset($row_material['material_title']) ? $row_material['material_title'] : '') ?>
                     </a>
+                    <!-- chỉnh sửa học liệu: quản trị -->
                     <?php if ($role_course == 1 || $role_all == 2) : ?>
                     <div>
                         <button class="bg-white border-0 bg-0" data-bs-toggle="dropdown"><i
                                 class="fa-solid fa-ellipsis"></i></button>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            <!-- cập nhật trạng thái học liệu -->
                             <li>
                                 <form method="post">
-                                    <!-- chỉnh sửa học liệu: quản trị -->
                                     <?php
                                                                 if ($row_material['status'] == 1) : ?>
                                     <button class="dropdown-item text-warning" type="submit"
@@ -320,10 +321,12 @@ if ($lecture_data && $lecture_data->num_rows > 0) {
                                 </form>
 
                             </li>
+                            <!-- xóa học liệu -->
                             <li>
                                 <form method="post"><button class="dropdown-item text-danger" type="submit"
                                         name="material_delete" value="<?= $row_material['id'] ?>">Xóa</button></form>
                             </li>
+                            <!-- cập nhật vị trí học liệu -->
                             <li>
                                 <form method="post">
                                     <div class="input-group input-group-sm ">
