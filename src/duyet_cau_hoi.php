@@ -1,5 +1,4 @@
 <?php
-include '../connectdb.php';
 include '../function.php';
 if ($_GET['task'] == 'confirm') {
     update('lecture_questions', 'id=' . $_GET['question_id'] . '', ['status' => 1]);

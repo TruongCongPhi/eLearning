@@ -194,7 +194,7 @@ function countt($tableName, $condition)
 function searchUser($name)
 {
 	global $conn;
-	$sql = "SELECT * FROM users WHERE username LIKE '$name'";
+	$sql = "SELECT * FROM users WHERE username LIKE '%$name%'";
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 		return $result;

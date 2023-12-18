@@ -5,8 +5,8 @@ include '../function.php';
 isLogin2();
 
 $username = $_SESSION['username'];
-$role_all = $_SESSION['role_all'];
-$role_course = $_SESSION['role_course'];
+$role_all = $_SESSION['role_all']; // quyền quản trị admin
+$role_course = $_SESSION['role_course']; // quyền quản trị khóa học
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,9 +47,9 @@ $role_course = $_SESSION['role_course'];
                             echo  $username ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="dang_xuat.php">Đăng xuất</a></li>
                             <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#model_pass_edit">Đổi
                                     mật khẩu</a></li>
+                            <li><a class="dropdown-item" href="dang_xuat.php">Đăng xuất</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -83,7 +83,7 @@ $role_course = $_SESSION['role_course'];
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" name="submit" class="btn btn-primary">Cập
+                        <button type="submit" name="update_pass" class="btn btn-primary">Cập
                             nhật</button>
                     </div>
                 </form>
@@ -91,7 +91,7 @@ $role_course = $_SESSION['role_course'];
         </div>
     </div>
     <?php
-    if (isset($_POST['submit'])) {
+    if (isset($_POST['update_pass'])) {
         $pass = get('users', "username= '{$username}'")['password'];
         $pass_old = $_POST['pass_old'];
         $pass_new = $_POST['pass_new'];
@@ -102,10 +102,7 @@ $role_course = $_SESSION['role_course'];
         } elseif ($pass_new_1 != $pass_new) {
             echo '<div class="alert alert-warning d-flex align-items-center" role="alert"">Mật khẩu nhập lại không trùng khớp.Hãy thử lại</div>';
         } else {
-
-
-            $update_pass = update('users', "username= '{$username}'", ['password' => md5('{$pass_new}')]);
-
+            $update_pass = update('users', "username= '{$username}'", ['password' => md5($pass_new)]);
             if ($update_pass) {
                 echo '<div class="alert alert-success  " role="alert">Đổi mật khẩu thành công</div>';
             }

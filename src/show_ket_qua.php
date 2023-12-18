@@ -23,7 +23,7 @@ $quizz_data = get('history_quizz', "id={$_GET['id_quizz']}");
 
     <div class="align-items-center p-3 my-3 bg-purple rounded shadow m-auto" style="width: 60%;">
         <div class="vstack gap-3">
-            <div class="p-2">Họ và tên: <?= $_SESSION["username"] ?></div>
+            <div class="p-2">Họ và tên: <?= $username ?></div>
             <div class="p-2">Điểm số: <?= $quizz_data['score'] ?>%</div>
             <div class="p-2">Thời gian nộp bài:
                 <?= $quizz_data['time_finish'] ?></div>

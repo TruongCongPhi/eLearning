@@ -2,7 +2,7 @@
 include 'navbar.php';
 checkKhoaHoc();
 
-$_SESSION['form_submitted'] = false;
+$_SESSION['form_submitted'] = false; // dùng session theo dõi đã nộp bài chưa
 
 $data_course = get('courses', 'id=' . $_GET['course_id'] . '');
 $data_lecture = get('lectures', 'id=' . $_GET['lecture_id'] . '');
