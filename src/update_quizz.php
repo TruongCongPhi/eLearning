@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     date_default_timezone_set('Asia/Ho_Chi_Minh');
     $time_finish = date('H:i:s d-m-Y');
     $score = 0;
-    $lecture_id = $_POST['lecture_id'];
+    $lecture_id = $_GET['lecture_id'];
     $quizz_session = [];
     foreach ($_POST as $key => $value) {
         if (strpos($key, "choice_") !== false) {
@@ -66,6 +66,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $update_quizz = update('history_quizz', "id={$_POST['history_id']}", $lich_su);
     if ($update_quizz) {
 
-        header("location: show_ket_qua.php?id_quizz={$_POST['history_id']}");
+        header("location: show_ket_qua.php?course_id={$_GET['course_id']}&lecture_id={$_GET['lecture_id']}&id_quizz={$_POST['history_id']}");
     }
 }

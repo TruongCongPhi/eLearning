@@ -3,36 +3,15 @@ if (!isset($_GET['id_quizz'])) {
     header('location: khoa_hoc.php');
     exit();
 }
-
-$select = [
-    'l.id AS lecture_id',
-    'c.id AS course_id'
-];
-$fromTable = 'history_quizz h';
-$joins = [
-    'JOIN lectures l ON h.lecture_id = l.id',
-    'JOIN courses c ON l.course_id = c.id'
-];
-$conditions = [
-    "h.id ={$_GET['id_quizz']}"
-];
-$ids = getJoin($select, $fromTable, $joins, $conditions);
-$data_course = get('courses', 'id=' . $ids[0]['course_id'] . '');
-$data_lecture = get('lectures', 'id=' . $ids[0]['lecture_id'] . '');
 ?>
 
-<div class="d-flex align-items-center p-3 my-3 bg-purple rounded shadow">
-    <div class="lh-1">
-        <h2 class="mb-0 lh-1">Khóa học: <?= $data_course['course_title'] ?></h2>
-        <p class="fw-medium fs-5 mt-2"><?= $data_lecture['lecture_title'] ?></p>
-    </div>
-</div>
-
-<a class="btn btn-primary" href="lich_su_quizz.php?course_id=<?= $ids[0]['course_id'] ?>&lecture_id=<?= $ids[0]['lecture_id'] ?>">Trở lại</a>
+<a class="btn btn-primary mt-3" href="show_ket_qua.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>&id_quizz=<?= $_GET['id_quizz'] ?>">Trở
+    lại</a>
 
 
-<h4>Chi tiết</h4>
+<h4 class="text-center">Xem chi tiết</h4>
 <div class="d-flex align-items-center justify-content-center m-auto p-3 my-3 bg-purple rounded shadow" style="width: 60%;">
+
     <!-- Your content goes here -->
     <div class="row">
         <?php
@@ -49,7 +28,7 @@ $data_lecture = get('lectures', 'id=' . $ids[0]['lecture_id'] . '');
                     $is_correct_checked = ($correct_question == 1) ? "border border-success" : "border border-danger";
                 }
             }
-            $question_data = get('lecture_questions', "lecture_id={$ids[0]['lecture_id']} AND id={$id_question}");
+            $question_data = get('lecture_questions', "lecture_id={$_GET['lecture_id']} AND id={$id_question}");
 
         ?>
 

@@ -23,14 +23,15 @@ $quizz_data = get('history_quizz', "id={$_GET['id_quizz']}");
 
     <div class="align-items-center p-3 my-3 bg-purple rounded shadow m-auto" style="width: 60%;">
         <div class="vstack gap-3">
-            <div class="p-2">Họ và tên: <?= $username ?></div>
-            <div class="p-2">Điểm số: <?= $quizz_data['score'] ?>%</div>
+            <div class="p-2">Họ và tên: <span class="fw-medium"><?= $username ?></span></div>
+            <div class="p-2">Điểm số: <span class="fw-medium"><?= $quizz_data['score'] ?>%</span></div>
             <div class="p-2">Thời gian nộp bài:
-                <?= $quizz_data['time_finish'] ?></div>
+                <span class="fw-medium"><?= $quizz_data['time_finish'] ?></span>
+            </div>
         </div>
         <div class="p-3 d-flex">
-            <a href="chi_tiet_dap_an.php?id_quizz=<?= $_GET['id_quizz'] ?>" class="btn btn-info me-2">Xem chi tiết</a>
-            <a href="lich_su_quizz.php?id_quizz=<?= $_GET['id_quizz'] ?>" class="btn btn-danger">Thoát</a>
+            <a href="chi_tiet_dap_an.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>&id_quizz=<?= $_GET['id_quizz'] ?>" class="btn btn-info me-2">Xem chi tiết</a>
+            <a href="lich_su_quizz.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>" class="btn btn-danger">Thoát</a>
         </div>
     </div>
 </div>

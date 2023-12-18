@@ -52,7 +52,7 @@ if (isset($_POST['material_delete'])) {
 if (isset($_POST['open_quizz'])) {
     $postion_current = getArrayOrder('materials', "lecture_id={$_POST['open_quizz']}", 'position DESC', 1);
     (is_null($postion_current)) ? $postion_new = 1 : $postion_new = $postion_current->fetch_assoc()['position'] + 1;
-    $count_question = countt('lecture_questions', "lecture_id={$_POST['open_quizz']}");
+    $count_question = countt('lecture_questions', "lecture_id={$_POST['open_quizz']} AND status=1");
 
     $data_quizz = [
         'lecture_id' => $_POST['open_quizz'],
@@ -61,8 +61,8 @@ if (isset($_POST['open_quizz'])) {
         'status' => 1,
         'position' => $postion_new,
     ];
-    if ($count_question < 10) {
-        echo "<script>alert('Số lượng câu hỏi trong bài giảng không đủ. Vui lòng thêm ít nhất 10 câu hỏi để mở Quizz !');</script>";
+    if ($count_question < 5) {
+        echo "<script>alert('Số lượng câu hỏi được duyệt trong bài giảng không đủ 5. Vui lòng thêm ít nhất 5 câu hỏi đã duyệt để mở Quizz !');</script>";
     } else {
         insert('materials', $data_quizz);
         header("location: bai_giang.php?course_id={$_GET['course_id']}");
@@ -235,6 +235,8 @@ if ($lecture_data && $lecture_data->num_rows > 0) {
                             học liệu</a></li>
                     <li><button class="dropdown-item" type="submit" name="open_quizz"
                             value="<?= $row_lecture['id'] ?>">Mở quizz</button></li>
+                    <li><a href="thong_ke_quizz.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $row_lecture['id'] ?>"
+                            class="dropdown-item">Thống kê quizz</a></li>
                     <li><button class="dropdown-item text-danger" type="submit" name="lecture_delete"
                             value="<?= $row_lecture['id'] ?>">Xóa bài giảng</button></li>
                 </ul>
@@ -276,7 +278,7 @@ if ($lecture_data && $lecture_data->num_rows > 0) {
                                     break;
                                 case "video":
                                     $srcIcon = "../images/video.png";
-                                    $srcPath =  "#";
+                                    $srcPath =  $row_material['path'];
                                     break;
                                 case "notify":
                                     $srcIcon = "../images/notify.png";

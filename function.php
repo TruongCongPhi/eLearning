@@ -30,11 +30,10 @@ function checkLogin($username, $password)
 			if ($username == $row['username'] && md5($password) == $row['password']) {
 				session_start();
 				$user_role_all = get('users', 'username="' . $username . '"')['role'];
-				$user_role_course = get('course_management', 'username="' . $username . '"')['role'];
+
 
 				$_SESSION['username'] = $username;
 				$_SESSION['role_all'] = $user_role_all;
-				$_SESSION['role_course'] = $user_role_course;
 				if ($username == 'admin') {
 					$_SESSION['quyen'] = 1;
 				} else {
@@ -49,7 +48,7 @@ function checkLogin($username, $password)
 }
 // end checkLogin
 
-// check vào Khóa học
+// check Khóa học
 function checkKhoaHoc()
 {
 	if (!isset($_GET['course_id'])) {
@@ -58,7 +57,15 @@ function checkKhoaHoc()
 	}
 }
 
+// check quyền khóa học
+function checkRoleCourse($course_id, $username)
+{
+	$condition = "course_id={$course_id} AND username='{$username}";
+	$user_role_course = get('course_management', $condition)['role'];
+	return $user_role_course;
+}
 
+// lấy một
 function get($table, $condition)
 {
 	global $conn;
@@ -76,14 +83,14 @@ function get($table, $condition)
 	}
 }
 
-//lấy nhiều bản ghi, mặc định là 200
-function getArray($tableName, $condition, $limit = 200)
+//lấy danh sách 
+function getArray($tableName, $condition)
 {
 	global $conn;
 	if (empty($condition)) {
-		$query = "SELECT * FROM $tableName LIMIT $limit";
+		$query = "SELECT * FROM $tableName";
 	} else {
-		$query = "SELECT * FROM $tableName WHERE $condition LIMIT $limit";
+		$query = "SELECT * FROM $tableName WHERE $condition";
 	}
 	//var_dump($query);
 	$result = mysqli_query($conn, $query);

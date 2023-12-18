@@ -8,8 +8,8 @@ $lecture_data = get('lectures', 'id=' . $_GET['lecture_id']  . ''); //đữ li�
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $type = $_POST['type'];
-    $check = 1;
-    $path = null;
+    $check = 1; // biến kiểm tra thêm học liệu
+    $path = null; // địa chỉ url
     $postion_current = getArrayOrder('materials', "lecture_id={$_GET['lecture_id']}", 'position DESC', 1); // truy vấn vị trí thứ tự hiển thị cuối cùng học liệu theo bài giảng
     (is_null($postion_current)) ? $postion_new = 1 : $postion_new = $postion_current->fetch_assoc()['position'] + 1; // Chưa có thì stt = 1, có rồi thì +1
 
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $path = $_POST['link'];
         } else {
             $mess_link = true; // biến thông báo lỗi 
-            $check = 0; // biến kiểm tra thêm học liệu
+            $check = 0;
         }
     } elseif ($type != 'link' && empty($_FILES["file"]['name'])) { // khác link và không upload file thì báo lỗi 
         $mess_file = true;

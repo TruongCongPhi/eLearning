@@ -9,7 +9,7 @@ if (isset($_POST['xoa'])) {
 }
 ?>
 <?php if ($role_all > 1) : ?>
-    <a href="them_khoa_hoc.php" class="btn btn-primary">Thêm khóa học</a>
+<a href="them_khoa_hoc.php" class="btn btn-primary">Thêm khóa học</a>
 <?php endif ?>
 
 <div class="" style="text-align: center;">
@@ -21,24 +21,19 @@ if (isset($_POST['xoa'])) {
 
         <?php
         $username = $_SESSION['username'];
-        if ($username == 'admin') {
+        if ($username == 'admin') { // admin: hiện tất cả
             $courses = getArray('courses', '');
         } else {
-
             $select = [
                 'courses.*'
             ];
-
             $fromTable = 'courses';
-
             $joins = [
                 'JOIN course_management ON courses.id = course_management.course_id'
             ];
-
             $conditions = [
                 "course_management.username ='{$username}'"
             ];
-
             $courses = getJoin($select, $fromTable, $joins, $conditions);
         }
         ?>
@@ -50,18 +45,19 @@ if (isset($_POST['xoa'])) {
                 echo '<div class="text-center alert alert-warning">Chưa có khóa học nào!</div>';
             } else {
                 foreach ($courses as $course) : ?>
-                    <div class="col">
-                        <div class="card">
-                            <img src="../images/khoahoc.jpg" class="card-img-top" alt="Course Image">
-                            <div class="card-body">
-                                <h5 class="card-title"><?= $course["course_title"] ?></h5>
-                                <a class="btn btn-primary" href="bai_giang.php?course_id=<?= $course["id"] ?>">Truy cập</a>
-                                <?php if ($role_all > 1) : ?>
-                                    <button class="btn btn-danger" name="xoa" value="<?= $course['id'] ?>" type="submit">Xóa</button>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+            <div class="col">
+                <div class="card">
+                    <img src="../images/khoahoc.jpg" class="card-img-top" alt="Course Image">
+                    <div class="card-body">
+                        <h5 class="card-title"><?= $course["course_title"] ?></h5>
+                        <a class="btn btn-primary" href="bai_giang.php?course_id=<?= $course["id"] ?>">Truy cập</a>
+                        <?php if ($role_all > 1) : ?>
+                        <button class="btn btn-danger" name="xoa" value="<?= $course['id'] ?>"
+                            type="submit">Xóa</button>
+                        <?php endif; ?>
                     </div>
+                </div>
+            </div>
             <?php endforeach;
             } ?>
 

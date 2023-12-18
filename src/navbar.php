@@ -6,7 +6,15 @@ isLogin2();
 
 $username = $_SESSION['username'];
 $role_all = $_SESSION['role_all']; // quyền quản trị admin
-$role_course = $_SESSION['role_course']; // quyền quản trị khóa học
+if (isset($_GET['course_id'])) {
+    if ($username == 'admin') {
+        $role_course = 1;
+    } else {
+        $condition = "course_id={$_GET['course_id']} AND username='{$username}'";
+        $role_course = get('course_management', $condition)['role']; // quyền quản trị khóa học
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
