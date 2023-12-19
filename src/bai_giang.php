@@ -45,6 +45,10 @@ if (isset($_POST['status_material_update'])) {
 }
 // Xóa học liệu
 if (isset($_POST['material_delete'])) {
+    $old_path = get('materials', "id={$_POST['material_delete']}")['path'];
+    if ($old_path != null) {
+        unlink($old_path); // Xóa file cũ
+    }
     delete('materials', "id={$_POST['material_delete']}");
     header("location: bai_giang.php?course_id={$_GET['course_id']}");
 }
@@ -102,9 +106,7 @@ if (isset($_POST['position_update'])) {
 <!-- Thanh điều hướng -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a
-                class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                href="khoa_hoc.php">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="khoa_hoc.php">Trang chủ</a></li>
         <li class="breadcrumb-item text-dark active" aria-current="page">Khóa học: <?= $data['course_title'] ?></li>
     </ol>
 </nav>
@@ -115,20 +117,19 @@ if (isset($_POST['position_update'])) {
         <p class="mt-2"><?= $data['course_desc'] ?></p>
     </div>
     <!-- Chỉnh sửa khóa học: quản trị -->
-    <?php if ($role_course == 1 || $role_all == 2) : ?>
-    <div class="dropdown cursor-auto">
-        <button class="bg-white dropdown-toggle border-0 bg-0" data-bs-toggle="dropdown"><i
-                class="fa-solid fa-pen-to-square "></i></button>
-        <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#model_course_edit">Chỉnh sửa thông tin
-                    khóa
-                    học</a></li>
-            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#model_lecture_add">Thêm bài giảng</a>
-            </li>
-            <li><a class="dropdown-item" href="quan_ly_khoa_hoc.php?course_id=<?= $_GET['course_id'] ?>">Quản lý khóa
-                    học</a></li>
-        </ul>
-    </div>
+    <?php if ($role_course == 1 || $role_all > 0) : ?>
+        <div class="dropdown cursor-auto">
+            <button class="bg-white dropdown-toggle border-0 bg-0" data-bs-toggle="dropdown"><i class="fa-solid fa-pen-to-square "></i></button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#model_course_edit">Chỉnh sửa thông tin
+                        khóa
+                        học</a></li>
+                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#model_lecture_add">Thêm bài giảng</a>
+                </li>
+                <li><a class="dropdown-item" href="quan_ly_khoa_hoc.php?course_id=<?= $_GET['course_id'] ?>">Quản lý khóa
+                        học</a></li>
+            </ul>
+        </div>
     <?php endif; ?>
 </div>
 
@@ -145,13 +146,11 @@ if (isset($_POST['position_update'])) {
 
                     <div class="input-group mb-3">
                         <span class="input-group-text">Khóa học:</span>
-                        <input type="text" class="form-control" value="<?= $data['course_title'] ?>"
-                            name="course_title">
+                        <input type="text" class="form-control" value="<?= $data['course_title'] ?>" name="course_title">
                     </div>
                     <div class="input-group">
                         <span class="input-group-text">Mô tả:</span>
-                        <textarea class="form-control" aria-label="With textarea"
-                            name="course_desc"><?= $data['course_desc'] ?></textarea>
+                        <textarea class="form-control" aria-label="With textarea" name="course_desc"><?= $data['course_desc'] ?></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -200,52 +199,45 @@ if (isset($mess)) {
 <?php
 if ($lecture_data && $lecture_data->num_rows > 0) {
     while ($row_lecture = mysqli_fetch_assoc($lecture_data)) {
-        if ($row_lecture['status'] == 1 || $role_course == 1  || $role_all == 2) { // trạng thái 1 hoặc quản thị => hiển thị
+        if ($row_lecture['status'] == 1 || $role_course == 1  || $role_all > 0) { // trạng thái 1 hoặc quản thị => hiển thị
 ?>
-<!-- Bắt đầu bài giảng -->
-<div class="my-3 p-3 bg-body border rounded shadow-sm ">
-    <form method="post">
-        <div class="d-flex justify-content-between">
-            <h4 class="border-bottom pb-2 mb-0"><?= $row_lecture['lecture_title'] ?>
-                <?php if (($role_course == 1 || $role_all == 2) && $row_lecture['status'] == 1) : ?>
-                <!-- Hiển thị trạng thái cho quản trị -->
-                <span class="text-success">(Hiện)</span>
-                <?php elseif (($role_course == 1  || $role_all == 2) && $row_lecture['status'] == 0) : ?>
-                <span class="text-warning">(Ẩn)</span>
-                <?php endif; ?>
-            </h4>
-            <!-- chỉnh sửa khóa học: quản trị -->
-            <?php if ($role_course == 1 || $role_all == 2) : ?>
-            <div class="dropdown cursor-auto">
-                <button class="bg-white dropdown-toggle border-0 bg-0" data-bs-toggle="dropdown"><i
-                        class="fa-solid fa-pen-to-square "></i></button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                        <?php
+            <!-- Bắt đầu bài giảng -->
+            <div class="my-3 p-3 bg-body border rounded shadow-sm ">
+                <form method="post">
+                    <div class="d-flex justify-content-between">
+                        <h4 class="border-bottom pb-2 mb-0"><?= $row_lecture['lecture_title'] ?>
+                            <?php if (($role_course == 1 || $role_all > 0) && $row_lecture['status'] == 1) : ?>
+                                <!-- Hiển thị trạng thái cho quản trị -->
+                                <span class="text-success">(Hiện)</span>
+                            <?php elseif (($role_course == 1  || $role_all > 0) && $row_lecture['status'] == 0) : ?>
+                                <span class="text-warning">(Ẩn)</span>
+                            <?php endif; ?>
+                        </h4>
+                        <!-- chỉnh sửa khóa học: quản trị -->
+                        <?php if ($role_course == 1 || $role_all > 0) : ?>
+                            <div class="dropdown cursor-auto">
+                                <button class="bg-white dropdown-toggle border-0 bg-0" data-bs-toggle="dropdown"><i class="fa-solid fa-pen-to-square "></i></button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <?php
                                         if ($row_lecture['status'] == 1) : ?>
-                        <button class="dropdown-item text-warning" type="submit" name="status_lecture_update"
-                            value="<?= $row_lecture['id'] ?>-0">Ẩn</button>
-                        <?php else : ?>
-                        <button class="dropdown-item text-success" type="submit" name="status_lecture_update"
-                            value="<?= $row_lecture['id'] ?>-1">Hiện</button>
+                                            <button class="dropdown-item text-warning" type="submit" name="status_lecture_update" value="<?= $row_lecture['id'] ?>-0">Ẩn</button>
+                                        <?php else : ?>
+                                            <button class="dropdown-item text-success" type="submit" name="status_lecture_update" value="<?= $row_lecture['id'] ?>-1">Hiện</button>
+                                        <?php endif; ?>
+                                    </li>
+                                    <li><a class="dropdown-item" href="them_hoc_lieu.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $row_lecture['id'] ?>">Thêm
+                                            học liệu</a></li>
+                                    <li><button class="dropdown-item" type="submit" name="open_quizz" value="<?= $row_lecture['id'] ?>">Mở quizz</button></li>
+                                    <li><a href="thong_ke_quizz.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $row_lecture['id'] ?>" class="dropdown-item">Thống kê quizz</a></li>
+                                    <li><button class="dropdown-item text-danger" type="submit" name="lecture_delete" value="<?= $row_lecture['id'] ?>">Xóa bài giảng</button></li>
+                                </ul>
+                            </div>
                         <?php endif; ?>
-                    </li>
-                    <li><a class="dropdown-item"
-                            href="them_hoc_lieu.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $row_lecture['id'] ?>">Thêm
-                            học liệu</a></li>
-                    <li><button class="dropdown-item" type="submit" name="open_quizz"
-                            value="<?= $row_lecture['id'] ?>">Mở quizz</button></li>
-                    <li><a href="thong_ke_quizz.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $row_lecture['id'] ?>"
-                            class="dropdown-item">Thống kê quizz</a></li>
-                    <li><button class="dropdown-item text-danger" type="submit" name="lecture_delete"
-                            value="<?= $row_lecture['id'] ?>">Xóa bài giảng</button></li>
-                </ul>
-            </div>
-            <?php endif; ?>
-        </div>
+                    </div>
 
 
-        <?php
+                    <?php
                     $material_data =  getArrayOrder('materials', 'lecture_id=' . $row_lecture['id'] . '', ' position ASC', 50);
                     $stt = 1;
 
@@ -274,7 +266,7 @@ if ($lecture_data && $lecture_data->num_rows > 0) {
                                     break;
                                 case "document":
                                     $srcIcon = "../images/document.png";
-                                    $srcPath = "#";
+                                    $srcPath =  $row_material['path'];
                                     break;
                                 case "video":
                                     $srcIcon = "../images/video.png";
@@ -282,77 +274,82 @@ if ($lecture_data && $lecture_data->num_rows > 0) {
                                     break;
                                 case "notify":
                                     $srcIcon = "../images/notify.png";
-                                    $srcPath = "#";
+                                    $srcPath =  $row_material['path'];
+                                    break;
+                                case "assignment":
+                                    $srcIcon = "../images/assignment.png";
+                                    $srcPath = "bai_tap.php?course_id={$_GET['course_id']}&lecture_id={$row_lecture['id']}&material_id={$row_material['id']}";
                                     break;
                             }
-                            if ($row_material['status'] == 1 || $role_course == 1 || $role_all == 2) { // trạng thái 1, quản trị : hiển thị 
+                            if ($row_material['status'] == 1 || $role_course == 1 || $role_all > 0) { // trạng thái 1, quản trị : hiển thị 
                     ?>
-        <!-- bắt đầu học liệu -->
-        <div class="d-flex text-body-secondary border-bottom pt-3 ">
-            <!-- thêm stt dễ xác định vị trí -->
-            <span class="mt-1 fs-6 me-2"><?= ($role_course == 1 || $role_all == 2) ? $stt : '' ?></span>
-            <!-- icon học liệu -->
-            <a href="<?= $srcPath ?>">
-                <img class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" src="<?= $srcIcon ?>"
-                    alt="Placeholder: 32x32" role="img" aria-label="Placeholder: 32x32"
-                    preserveAspectRatio="xMidYMid slice" focusable="false">
-            </a>
-            <!--tiêu để  -->
-            <div class="pb-4 mt-2 mb-0 small lh-sm w-100 ">
-                <div class="d-flex justify-content-between ">
-                    <a href="<?= $srcPath ?>"
-                        class=" text-decoration-none <?= (($role_course == 1  || $role_all) == 2 && $row_material['status'] == 0) ? "text-warning" : "text-dark" ?>"><?= (isset($row_material['material_title']) ? $row_material['material_title'] : '') ?>
-                    </a>
-                    <!-- chỉnh sửa học liệu: quản trị -->
-                    <?php if ($role_course == 1 || $role_all == 2) : ?>
-                    <div>
-                        <button class="bg-white border-0 bg-0" data-bs-toggle="dropdown"><i
-                                class="fa-solid fa-ellipsis"></i></button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <!-- cập nhật trạng thái học liệu -->
-                            <li>
-                                <form method="post">
-                                    <?php
+                                <!-- bắt đầu học liệu -->
+                                <div class="d-flex text-body-secondary border-bottom pt-3 ">
+                                    <!-- thêm stt dễ xác định vị trí -->
+                                    <span class="mt-1 fs-6 me-2"><?= ($role_course == 1 || $role_all > 0) ? $stt : '' ?></span>
+                                    <!-- icon học liệu -->
+                                    <a href="<?= $srcPath ?>">
+                                        <img class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32" src="<?= $srcIcon ?>" alt="Placeholder: 32x32" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    </a>
+                                    <!--tiêu để  -->
+                                    <div class="pb-4 mt-2 mb-0 small lh-sm w-100 ">
+                                        <div class="d-flex justify-content-between">
+                                            <a href="<?= $srcPath ?>" class=" text-decoration-none <?= (($role_course == 1  || $role_all  > 0) && $row_material['status'] == 0) ? "text-warning" : "text-dark" ?>"><?= (isset($row_material['material_title']) ? $row_material['material_title'] : '') ?>
+                                            </a>
+                                            <!-- chỉnh sửa học liệu: quản trị -->
+                                            <?php if ($role_course == 1 || $role_all > 0) : ?>
+                                                <div>
+                                                    <button class="bg-white border-0 bg-0" data-bs-toggle="dropdown"><i class="fa-solid fa-ellipsis"></i></button>
+                                                    <ul class="dropdown-menu dropdown-menu-end">
+                                                        <!-- Thóng kê bài tập(dành cho type : assignment) -->
+                                                        <?php
+                                                        if ($row_material['type'] == 'assignment') : ?>
+                                                            <li>
+                                                                <form method="post">
+                                                                    <a href="thong_ke_bai_tap.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $row_lecture['id'] ?>&material_id=<?= $row_material['id'] ?>" class="dropdown-item">Thống kê bài
+                                                                        tập</a>
+                                                                </form>
+                                                            </li>
+                                                        <?php endif; ?>
+
+                                                        <!-- cập nhật trạng thái học liệu -->
+                                                        <li>
+                                                            <form method="post">
+                                                                <?php
                                                                 if ($row_material['status'] == 1) : ?>
-                                    <button class="dropdown-item text-warning" type="submit"
-                                        name="status_material_update" value="<?= $row_material['id'] ?>-0">Ẩn</button>
-                                    <?php else : ?>
-                                    <button class="dropdown-item text-success" type="submit"
-                                        name="status_material_update" value="<?= $row_material['id'] ?>-1">Hiện</button>
-                                    <?php endif; ?>
-                                </form>
-
-                            </li>
-                            <!-- xóa học liệu -->
-                            <li>
-                                <form method="post"><button class="dropdown-item text-danger" type="submit"
-                                        name="material_delete" value="<?= $row_material['id'] ?>">Xóa</button></form>
-                            </li>
-                            <!-- cập nhật vị trí học liệu -->
-                            <li>
-                                <form method="post">
-                                    <div class="input-group input-group-sm ">
-                                        <select class=" form-select" name="position" required>
-                                            <option selected disabled value="">Sắp xếp...</option>
-                                            <?php for ($i = 1; $i <= $material_data->num_rows; $i++) { // Hiển thị các vị trí của bài giảng
+                                                                    <button class="dropdown-item text-warning" type="submit" name="status_material_update" value="<?= $row_material['id'] ?>-0">Ẩn</button>
+                                                                <?php else : ?>
+                                                                    <button class="dropdown-item text-success" type="submit" name="status_material_update" value="<?= $row_material['id'] ?>-1">Hiện</button>
+                                                                <?php endif; ?>
+                                                            </form>
+                                                        </li>
+                                                        <!-- xóa học liệu -->
+                                                        <li>
+                                                            <form method="post"><button class="dropdown-item text-danger" type="submit" name="material_delete" value="<?= $row_material['id'] ?>">Xóa</button></form>
+                                                        </li>
+                                                        <!-- cập nhật vị trí học liệu -->
+                                                        <li>
+                                                            <form method="post">
+                                                                <div class="input-group input-group-sm ">
+                                                                    <select class=" form-select" name="position" required>
+                                                                        <option selected disabled value="">Sắp xếp...</option>
+                                                                        <?php for ($i = 1; $i <= $material_data->num_rows; $i++) { // Hiển thị các vị trí của bài giảng
                                                                         ?>
-                                            <option value="<?= $i ?>"><?= $i ?></option>
-                                            <?php } ?>
-                                        </select>
-                                        <button class="btn btn-outline-secondary" name="position_update"
-                                            value="<?= $row_material['id'] . "-" . $row_material['lecture_id'] ?>"
-                                            type="submit">Cập nhật</button>
+                                                                            <option value="<?= $i ?>"><?= $i ?></option>
+                                                                        <?php } ?>
+                                                                    </select>
+                                                                    <button class="btn btn-outline-secondary" name="position_update" value="<?= $row_material['id'] . "-" . $row_material['lecture_id'] ?>" type="submit">Cập nhật</button>
+                                                                </div>
+                                                            </form>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
+                                </div>
 
-        <?php
+                    <?php
                             }
                             $stt++;
                         }
@@ -360,22 +357,19 @@ if ($lecture_data && $lecture_data->num_rows > 0) {
                         echo '<p>Chưa có học liệu</p>';
                     }
                     ?>
-        <!--end học liệu  -->
-        <small class="d-block text-end mt-3">
-            <a href="bien_tap.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $row_lecture['id'] ?>"
-                class="btn btn-outline-primary btn-sm">Đóng góp</a>
-        </small>
-    </form>
-</div>
-<!-- end bài giảng -->
-
-
+                    <!--end học liệu  -->
+                    <small class="d-block text-end mt-3">
+                        <a href="bien_tap.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $row_lecture['id'] ?>" class="btn btn-outline-primary btn-sm">Đóng góp</a>
+                    </small>
+                </form>
+            </div>
+            <!-- end bài giảng -->
 
 <?php
         }
     }
 } else {
-    echo '<p>chưa tải bài giảng lên .</p>';
+    echo '<p>Chưa có bài giảng</p>';
 }
 ?>
 

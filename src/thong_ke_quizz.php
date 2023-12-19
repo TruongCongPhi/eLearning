@@ -1,6 +1,6 @@
 <?php
 include 'navbar.php';
-// checkKhoaHoc();
+checkKhoaHoc();
 $data_course = get('courses', 'id=' . $_GET['course_id'] . '');
 $data_lecture = get('lectures', 'id=' . $_GET['lecture_id'] . '');
 ?>

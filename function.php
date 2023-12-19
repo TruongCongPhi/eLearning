@@ -100,16 +100,17 @@ function getArray($tableName, $condition)
 		return null;
 	}
 }
+
+//lấy từ nhiều bảng lk
 function getJoin($selectFields, $fromTable, $joins, $conditions)
 {
 	global $conn;
-	$selectClause = implode(', ', $selectFields);
-	$fromClause = $fromTable;
-	$joinClause = implode(' ', $joins);
-	$whereClause = !empty($conditions) ? "WHERE " . implode(' AND ', $conditions) : '';
+	$select = implode(', ', $selectFields);
+	$from = $fromTable;
+	$join = implode(' ', $joins);
+	$where = !empty($conditions) ? "WHERE " . implode(' AND ', $conditions) : '';
 
-	$query = "SELECT $selectClause FROM $fromClause $joinClause $whereClause";
-
+	$query = "SELECT $select FROM $from $join $where";
 	$result = mysqli_query($conn, $query);
 
 	if ($result && $result->num_rows > 0) {
@@ -123,12 +124,16 @@ function getJoin($selectFields, $fromTable, $joins, $conditions)
 	}
 }
 
-
+//lấy danh sách sắp xép
 function getArrayOrder($tableName, $condition1, $condition2, $limit)
 {
 	global $conn;
 
-	$query = "SELECT * FROM $tableName WHERE $condition1 ORDER BY $condition2 LIMIT $limit";
+	if (!empty($condition1)) {
+		$query = "SELECT * FROM $tableName WHERE $condition1 ORDER BY $condition2 LIMIT $limit";
+	} else {
+		$query = "SELECT * FROM $tableName ORDER BY $condition2 LIMIT $limit";
+	}
 	//var_dump($query);
 	$result = mysqli_query($conn, $query);
 	if ($result && $result->num_rows > 0) {
@@ -138,7 +143,7 @@ function getArrayOrder($tableName, $condition1, $condition2, $limit)
 	}
 }
 
-//post
+//insert
 function insert($tableName, $columnValueArray = [])
 {
 	global $conn;
@@ -186,7 +191,7 @@ function delete($tableName, $condition)
 	}
 }
 
-//count : đếm số lượng bản ghi trong bảng
+//count 
 function countt($tableName, $condition)
 {
 	global $conn;
@@ -198,6 +203,8 @@ function countt($tableName, $condition)
 	$result = mysqli_query($conn, $query);
 	return $result->num_rows;
 }
+
+//tìm kiếm người dùng
 function searchUser($name)
 {
 	global $conn;
@@ -209,7 +216,7 @@ function searchUser($name)
 		return null;
 	}
 }
-
+// check Ảnh
 function checkImage($file)
 {
 	$targetDirectory = "../uploads/";
@@ -236,6 +243,7 @@ function checkImage($file)
 		return false;
 	}
 }
+
 function uploadFile($file)
 {
 	$targetDirectory = "../uploads/";

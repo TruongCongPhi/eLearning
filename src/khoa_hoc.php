@@ -8,8 +8,20 @@ if (isset($_POST['xoa'])) {
     header('location:khoa_hoc.php');
 }
 ?>
-<?php if ($role_all > 1) : ?>
-<a href="them_khoa_hoc.php" class="btn btn-primary">Thêm khóa học</a>
+<?php if ($role_all > 0) : ?>
+
+<div class="dropdown show">
+    <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        Tùy chọn
+    </a>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" href="them_khoa_hoc.php">Thêm khóa học</a>
+        <a class="dropdown-item" href="them_tai_khoan.php">Thêm tài khoản</a>
+        <a class="dropdown-item" href="quan_ly_user.php">Quản lý người dùng</a>
+
+    </div>
+</div>
 <?php endif ?>
 
 <div class="" style="text-align: center;">
@@ -50,9 +62,10 @@ if (isset($_POST['xoa'])) {
                     <img src="../images/khoahoc.jpg" class="card-img-top" alt="Course Image">
                     <div class="card-body">
                         <h5 class="card-title"><?= $course["course_title"] ?></h5>
-                        <a class="btn btn-primary" href="bai_giang.php?course_id=<?= $course["id"] ?>">Truy cập</a>
-                        <?php if ($role_all > 1) : ?>
-                        <button class="btn btn-danger" name="xoa" value="<?= $course['id'] ?>"
+                        <a class="btn btn-sm btn-primary" href="bai_giang.php?course_id=<?= $course["id"] ?>">Truy
+                            cập</a>
+                        <?php if ($role_all > 0) : ?>
+                        <button class="btn btn-sm btn-danger" name="xoa" value="<?= $course['id'] ?>"
                             type="submit">Xóa</button>
                         <?php endif; ?>
                     </div>

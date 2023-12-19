@@ -5,7 +5,7 @@ unset($_SESSION['quizz_session']); // xóa ds câu hỏi ng dùng cũ
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     date_default_timezone_set('Asia/Ho_Chi_Minh');
-    $time_finish = date('H:i:s d-m-Y');
+    $time_finish = date('Y-m-d H:i:s');
     $score = 0;
     $lecture_id = $_GET['lecture_id'];
     $quizz_session = [];

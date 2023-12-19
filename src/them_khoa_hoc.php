@@ -1,6 +1,6 @@
 <?php
 include 'navbar.php';
-if ($role_all < 2) {
+if ($role_all < 1) {
     echo '<div class="text-center alert alert-warning">
    Bạn không được quyền truy cập vào trang này!<a href="khoa_hoc.php" class="alert-link">Quay lại</a>
   </div>';

@@ -30,12 +30,6 @@ if (isset($_GET['course_id'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <style>
-        .breadcrumb-item a.link-secondary:hover {
-            color: #007bff;
-            /* Màu xanh primary khi hover */
-        }
-    </style>
 
 </head>
 
@@ -79,15 +73,15 @@ if (isset($_GET['course_id'])) {
 
                         <div class="input-group mb-3">
                             <span class="input-group-text">Mật khẩu hiện tại:</span>
-                            <input type="password" class="form-control" value="" name="pass_old">
+                            <input type="password" class="form-control" value="" name="pass_old" required>
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text">Mật khẩu mới:</span>
-                            <input type="password" class="form-control" value="" name="pass_new">
+                            <input type="password" class="form-control" value="" name="pass_new" required>
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text">Nhập lại mật khẩu mới:</span>
-                            <input type="password" class="form-control" value="" name="pass_new_1">
+                            <input type="password" class="form-control" value="" name="pass_new_1" required>
                         </div>
                     </div>
                     <div class="modal-footer">
