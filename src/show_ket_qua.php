@@ -1,4 +1,8 @@
 <?php include 'navbar.php';
+if (!isset($_GET['id_quizz'])) {
+    header('location: khoa_hoc.php');
+    exit();
+}
 $_SESSION['form_submitted'] = true;
 $quizz_data = get('history_quizz', "id={$_GET['id_quizz']}");
 ?>
@@ -30,10 +34,8 @@ $quizz_data = get('history_quizz', "id={$_GET['id_quizz']}");
             </div>
         </div>
         <div class="p-3 d-flex">
-            <a href="chi_tiet_dap_an.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>&id_quizz=<?= $_GET['id_quizz'] ?>"
-                class="btn btn-info me-2">Xem chi tiết</a>
-            <a href="lich_su_quizz.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>"
-                class="btn btn-danger">Thoát</a>
+            <a href="chi_tiet_dap_an.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>&id_quizz=<?= $_GET['id_quizz'] ?>" class="btn btn-info me-2">Xem chi tiết</a>
+            <a href="lich_su_quizz.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>" class="btn btn-danger">Thoát</a>
         </div>
     </div>
 </div>

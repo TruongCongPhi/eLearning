@@ -1,5 +1,4 @@
 <?php
-session_start();
 include '../connectdb.php';
 include '../function.php';
 isLogin2();

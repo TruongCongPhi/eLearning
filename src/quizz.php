@@ -127,8 +127,8 @@ if (isset($_SESSION['form_submitted']) && $_SESSION['form_submitted'] == true) {
         <?php endif; ?>
     });
 
-    // Thời gian bắt đầu làm bài:  phút
-    var thoiGianLamBai = 20; // đơn vị là giây
+    // Thời gian làm bài: 1 phút
+    var thoiGianLamBai = 1 * 60; // đơn vị là giây
     var target_date = new Date().getTime() + thoiGianLamBai * 1000; // thời điểm kết thúc làm bài
 
     var countdown = document.getElementById('countdown');

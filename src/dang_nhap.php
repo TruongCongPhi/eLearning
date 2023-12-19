@@ -16,6 +16,11 @@
 <body>
     <?php
     include '../function.php';
+    if (isset($_SESSION['username'])) {
+        header('location: khoa_hoc.php');
+    }
+
+
     if (isset($_POST['submitLogin'])) {
         $username = $_POST['username'];
         $password = $_POST['password'];

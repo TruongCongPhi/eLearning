@@ -1,10 +1,11 @@
 <?php
 include 'connectdb.php';
-
+session_start();
 // Begin Login function
 function isLogin()
 {
 	// hàm kiểm tra đã đăng nhập chưa cho trang index
+
 	return isset($_SESSION['username']);
 }
 function isLogin2()
