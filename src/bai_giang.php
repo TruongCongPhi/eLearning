@@ -73,34 +73,51 @@ if (isset($_POST['open_quizz'])) {
     }
 }
 // Cập nhật vị trí học liệu
+// Cập nhật vị trí học liệu
 if (isset($_POST['position_update'])) {
-    $string_post = explode('-', $_POST['position_update']); // tách chuổi bởi kí tự '-' thành mảng gồm id bài giảng và id học liệu
-    $id_lecture = $string_post[1]; // id bài giảng
-    $id_material = $string_post[0]; // id học liệu
-    $position_new = $_POST['position']; // vị trí muốn chuyển đến
-    $position_current = get('materials', "id={$string_post[0]}")['position']; // vị trí hiện tại 
+    $string_post = explode('-', $_POST['position_update']);
+    $id_lecture = $string_post[1];
+    $id_material = $string_post[0];
+    $position_new = $_POST['position'];
 
-    // cập nhật vị trí cần sắp xếp và các vị trí khác
-    $update_this = update('materials', "id={$string_post[0]}", ["position" => $position_new]);
-    if ($position_current  > $position_new) { // nếu vị trí hiện tại > vị trí mới : từ vị trí mới -> vị trí hiện tại( BỎ QUA VỊ TRÍ HIỆN TẠI ) tại tăng +1  
-        $update_other = "UPDATE materials 
-        SET position = position + 1
-        WHERE lecture_id = {$id_lecture}
-        AND position BETWEEN {$position_new} AND {$position_current} 
-        AND id != {$string_post[0]}";
-        $result = mysqli_query($conn, $update_other);
-    } else { // ngược lại sẽ giảm -1
-        $update_other = "UPDATE materials 
-        SET position = position - 1 
-        WHERE lecture_id = {$id_lecture}
-        AND position BETWEEN {$position_new} AND {$position_current} 
-        AND id != {$string_post[0]}";
-        $result = mysqli_query($conn, $update_other);
-    }
-    if ($update_this && $result) {
+    // Lấy vị trí hiện tại từ cơ sở dữ liệu
+    $position_current = get('materials', "id={$string_post[0]}")['position'];
+
+    // Kiểm tra xem vị trí mới có khác với vị trí hiện tại hay không
+    if ($position_current != $position_new) {
+        // Thực hiện truy vấn cập nhật vị trí
+        $update_this = update('materials', "id={$string_post[0]}", ["position" => $position_new]);
+
+        // Nếu vị trí mới lớn hơn vị trí hiện tại, giảm -1 cho các vị trí nằm giữa chúng
+        if ($position_current < $position_new) {
+            $update_other2 = "UPDATE materials 
+                SET position = position - 1 
+                WHERE lecture_id = {$id_lecture}
+                AND position BETWEEN {$position_current} AND {$position_new} 
+                AND id != {$string_post[0]}";
+            $result = mysqli_query($conn, $update_other2);
+        }
+        // Nếu vị trí mới nhỏ hơn vị trí hiện tại, tăng +1 cho các vị trí nằm giữa chúng
+        else {
+            $update_other2 = "UPDATE materials 
+                SET position = position + 1 
+                WHERE lecture_id = {$id_lecture}
+                AND position BETWEEN {$position_new} AND {$position_current} 
+                AND id != {$string_post[0]}";
+            $result = mysqli_query($conn, $update_other2);
+        }
+
+        if ($update_this && $result) {
+            header("location: bai_giang.php?course_id={$_GET['course_id']}");
+        } else {
+            echo "Lỗi khi cập nhật vị trí.";
+        }
+    } else {
+        // Nếu vị trí mới trùng với vị trí hiện tại, không cần thực hiện gì cả
         header("location: bai_giang.php?course_id={$_GET['course_id']}");
-    } else echo "lỗi";
+    }
 }
+
 ?>
 
 <!-- Thanh điều hướng -->
