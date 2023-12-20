@@ -1,6 +1,6 @@
 <?php
 include '../function.php';
-// session_start();
+session_start();
 unset($_SESSION['quizz_session']); // xóa ds câu hỏi ng dùng cũ
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 

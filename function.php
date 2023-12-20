@@ -51,7 +51,7 @@ function checkLogin($username, $password)
 function checkKhoaHoc()
 {
 	if (!isset($_GET['course_id'])) {
-		header("location: khoa_hoc.php");
+		header("location: 404_error.php");
 		exit();
 	} else {
 		$check = get('courses', "id='{$_GET['course_id']}'");
@@ -65,7 +65,7 @@ function checkKhoaHoc()
 function checkTuan()
 {
 	if (!isset($_GET['lecture_id']) || !is_numeric($_GET['lecture_id'])) {
-		header("Location: khoa_hoc.php");
+		header("Location: 404_error.php");
 		exit();
 	}
 
@@ -80,7 +80,7 @@ function checkTuan()
 function checkHocLieu()
 {
 	if (!isset($_GET['material_id']) || !is_numeric($_GET['material_id'])) {
-		header("Location: khoa_hoc.php");
+		header("Location: 404_error.php");
 		exit();
 	}
 

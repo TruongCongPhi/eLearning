@@ -8,9 +8,12 @@ $role_all = $_SESSION['role_all']; // quyền quản trị admin
 if (isset($_GET['course_id'])) {
     if ($username == 'admin') {
         $role_course = 1;
-    } else {
+    } elseif (is_numeric($_GET['course_id'])) {
         $condition = "course_id={$_GET['course_id']} AND username='{$username}'";
         $role_course = get('course_management', $condition)['role']; // quyền quản trị khóa học
+    } else {
+        header('Location: 404_error.php');
+        exit();
     }
 }
 
@@ -37,15 +40,13 @@ if (isset($_GET['course_id'])) {
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light ">
         <div class="container-fluid px-5">
             <a class="navbar-brand" href="khoa_hoc.php">ProjectPHP K71</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse " id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto ">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdownMenuLink" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <?php
                             echo  $username ?>
                         </a>
