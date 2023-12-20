@@ -1,6 +1,7 @@
 <?php include 'navbar.php';
 isLogin2();
 checkKhoaHoc();
+checkTuan();
 $data_course = get('courses', 'id=' . $_GET['course_id'] . '');
 $data_lecture = get('lectures', 'id=' . $_GET['lecture_id'] . '');
 ?>

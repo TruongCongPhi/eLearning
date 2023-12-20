@@ -5,7 +5,6 @@ session_start();
 function isLogin()
 {
 	// hàm kiểm tra đã đăng nhập chưa cho trang index
-
 	return isset($_SESSION['username']);
 }
 function isLogin2()
@@ -32,7 +31,6 @@ function checkLogin($username, $password)
 				session_start();
 				$user_role_all = get('users', 'username="' . $username . '"')['role'];
 
-
 				$_SESSION['username'] = $username;
 				$_SESSION['role_all'] = $user_role_all;
 				if ($username == 'admin') {
@@ -49,14 +47,52 @@ function checkLogin($username, $password)
 }
 // end checkLogin
 
-// check Khóa học
+// check truy cập trái phép
 function checkKhoaHoc()
 {
 	if (!isset($_GET['course_id'])) {
 		header("location: khoa_hoc.php");
 		exit();
+	} else {
+		$check = get('courses', "id='{$_GET['course_id']}'");
+		if (!$check || $check == null) {
+			header('location: 404_error.php');
+			exit();
+		}
 	}
 }
+
+function checkTuan()
+{
+	if (!isset($_GET['lecture_id']) || !is_numeric($_GET['lecture_id'])) {
+		header("Location: khoa_hoc.php");
+		exit();
+	}
+
+	$lectureId = $_GET['lecture_id'];
+	$check = get('lectures', "id='{$lectureId}'");
+
+	if (!$check || $check == null) {
+		header('Location: 404_error.php');
+		exit();
+	}
+}
+function checkHocLieu()
+{
+	if (!isset($_GET['material_id']) || !is_numeric($_GET['material_id'])) {
+		header("Location: khoa_hoc.php");
+		exit();
+	}
+
+	$materialId = $_GET['material_id'];
+	$check = get('materials', "id='{$materialId}'");
+
+	if (!$check || $check == null) {
+		header('Location: 404_error.php');
+		exit();
+	}
+}
+//end check truy cập
 
 // check quyền khóa học
 function checkRoleCourse($course_id, $username)

@@ -1,6 +1,7 @@
 <?php
 include 'navbar.php';
 checkKhoaHoc();
+checkTuan();
 
 $_SESSION['form_submitted'] = false; // dùng session theo dõi đã nộp bài chưa
 

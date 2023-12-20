@@ -2,6 +2,11 @@
 if (!isset($_GET['id_quizz'])) {
     header('location: khoa_hoc.php');
     exit();
+} else {
+    $check = get('history_quizz', "id='{$_GET['id_quizz']}'");
+    if ($check == null) {
+        header('location: 404_error.php');
+    }
 }
 $_SESSION['form_submitted'] = true;
 $quizz_data = get('history_quizz', "id={$_GET['id_quizz']}");

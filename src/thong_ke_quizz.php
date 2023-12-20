@@ -1,23 +1,18 @@
 <?php
 include 'navbar.php';
 checkKhoaHoc();
+checkTuan();
 $data_course = get('courses', 'id=' . $_GET['course_id'] . '');
 $data_lecture = get('lectures', 'id=' . $_GET['lecture_id'] . '');
 ?>
 <!-- điều hướng -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a
-                class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                href="khoa_hoc.php">Trang chủ</a></li>
-        <li class="breadcrumb-item"><a
-                class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Khóa học:
+        <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="khoa_hoc.php">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Khóa học:
                 <?= $data_course['course_title'] ?></a>
         </li>
-        <li class="breadcrumb-item"><a
-                class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>"><?= $data_lecture['lecture_title'] ?></a></li>
+        <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>"><?= $data_lecture['lecture_title'] ?></a></li>
         <li class="breadcrumb-item text-dark active" aria-current="page">Thống kê quizz</li>
     </ol>
 </nav>
@@ -34,18 +29,18 @@ $data_lecture = get('lectures', 'id=' . $_GET['lecture_id'] . '');
     <?php
     $check_quizz = countt('materials', "lecture_id={$_GET['lecture_id']} AND type='quizz'");
     if ($check_quizz > 0) { ?>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">STT</th>
-                <th scope="col">Tên tài khoản</th>
-                <th scope="col">Trạng thái</th>
-                <th scope="col">Số lần</th>
-                <th scope="col">Điểm cao nhất</th>
-            </tr>
-        </thead>
-        <tbody class="table-group-divider">
-            <?php
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">STT</th>
+                    <th scope="col">Tên tài khoản</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Số lần</th>
+                    <th scope="col">Điểm cao nhất</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                <?php
                 $stt = 1;
                 $data_user = getArrayOrder('course_management', "course_id={$_GET['course_id']}", "username ASC", 200);
                 if ($data_user && $data_user->num_rows > 0) {
@@ -58,33 +53,33 @@ $data_lecture = get('lectures', 'id=' . $_GET['lecture_id'] . '');
                             $score_max = $data_user_quizz->fetch_assoc()['score'];
                         }
                 ?>
-            <tr>
-                <td><?= $stt ?></td>
-                <td><?= $row['username'] ?></td>
+                        <tr>
+                            <td><?= $stt ?></td>
+                            <td><?= $row['username'] ?></td>
 
-                <td><?php if ($count_quizz > 0 && $score_max > 80) {
+                            <td><?php if ($count_quizz > 0 && $score_max > 80) {
                                     echo '<p class="fw-medium text-success">Đạt</p>';
                                 } elseif ($count_quizz > 0 && $score_max < 80) {
                                     echo '<p class="fw-medium text-warning">Chưa đạt</p>';
                                 } else  echo '<p class="fw-medium text-danger">Chưa làm</p>';
                                 ?>
-                </td>
-                <td><?= $count_quizz ?></td>
-                <td><?= $score_max ?></td>
+                            </td>
+                            <td><?= $count_quizz ?></td>
+                            <td><?= $score_max ?></td>
 
 
-            </tr>
+                        </tr>
 
 
-            <?php
+                <?php
                         $stt++;
                     }
                 } else echo "<td colspan=5 align='center'> Trống</td>"
                 ?>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
     <?php
-    }else echo 'Chưa mở quizz';
+    } else echo 'Chưa mở quizz';
     ?>
 
 </div>

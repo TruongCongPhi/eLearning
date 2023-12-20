@@ -1,6 +1,8 @@
 <?php
 include 'navbar.php';
 checkKhoaHoc();
+checkTuan();
+checkHocLieu();
 date_default_timezone_set('Asia/Ho_Chi_Minh'); // lấy mũi giờ thời gian 
 
 $data_course = get('courses', 'id=' . $_GET['course_id'] . '');

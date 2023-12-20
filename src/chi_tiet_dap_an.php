@@ -4,7 +4,6 @@ if (!isset($_GET['id_quizz'])) {
     exit();
 }
 ?>
-
 <a class="btn btn-primary mt-3" href="show_ket_qua.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>&id_quizz=<?= $_GET['id_quizz'] ?>">Trở
     lại</a>
 

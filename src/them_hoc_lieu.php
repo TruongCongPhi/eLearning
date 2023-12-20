@@ -1,7 +1,7 @@
 <?php
 include 'navbar.php';
-
 checkKhoaHoc();
+checkTuan();
 
 $data = get('courses', 'id=' . $_GET['course_id'] . ''); // dữ liệu khóa học
 $lecture_data = get('lectures', 'id=' . $_GET['lecture_id']  . ''); //đữ liệu bài giảng
@@ -137,12 +137,8 @@ if (isset($_POST['add_assignment'])) {
 <!-- điều hướng -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a
-                class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                href="khoa_hoc.php">Trang chủ</a></li>
-        <li class="breadcrumb-item"><a
-                class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-                href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Khóa học:
+        <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="khoa_hoc.php">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Khóa học:
                 <?= $data['course_title'] ?></a>
         </li>
 
@@ -171,10 +167,7 @@ if (isset($mess)) {
             <div class="pb-4 mt-2 mb-0 small lh-sm w-100">
                 <div class="row  align-items-center">
                     <div class="row">
-                        <div class="col-md-6"><input name="material_title" class="form-control form-control-sm me-3"
-                                type="text"
-                                value="<?php echo isset($_POST['material_title']) ? htmlspecialchars($_POST['material_title']) : ''; ?>"
-                                placeholder="Nhập tiêu đề học liệu" required>
+                        <div class="col-md-6"><input name="material_title" class="form-control form-control-sm me-3" type="text" value="<?php echo isset($_POST['material_title']) ? htmlspecialchars($_POST['material_title']) : ''; ?>" placeholder="Nhập tiêu đề học liệu" required>
                         </div>
                         <div class="col-md-3"><select class=" form-select form-select-sm" name="type" required>
                                 <option selected disabled value="">Loại...</option>
@@ -196,24 +189,19 @@ if (isset($mess)) {
                         </div>
 
                         <div class="col-md-6 mt-1">
-                            <input name="link"
-                                class="form-control form-control-sm me-3 <?php if (isset($mess_link)) echo 'is-invalid'; ?>"
-                                type="text" placeholder="Dán đường link"
-                                value="<?php echo isset($_POST['link']) ? htmlspecialchars($_POST['link']) : ''; ?>">
+                            <input name="link" class="form-control form-control-sm me-3 <?php if (isset($mess_link)) echo 'is-invalid'; ?>" type="text" placeholder="Dán đường link" value="<?php echo isset($_POST['link']) ? htmlspecialchars($_POST['link']) : ''; ?>">
                             <?php if (isset($mess_link)) : ?>
-                            <div class="invalid-feedback">
-                                Vui lòng nhập địa chỉ link !
-                            </div>
+                                <div class="invalid-feedback">
+                                    Vui lòng nhập địa chỉ link !
+                                </div>
                             <?php endif; ?>
                         </div>
                         <div class="col-md-6 mt-1">
-                            <input type="file" name="file"
-                                class=" form-control form-control-sm me-3 <?php if (isset($mess_file)) echo 'is-invalid'; ?>"
-                                aria-label="file example" />
+                            <input type="file" name="file" class=" form-control form-control-sm me-3 <?php if (isset($mess_file)) echo 'is-invalid'; ?>" aria-label="file example" />
                             <?php if (isset($mess_file)) : ?>
-                            <div class="invalid-feedback">
-                                Vui lòng upload file!
-                            </div>
+                                <div class="invalid-feedback">
+                                    Vui lòng upload file!
+                                </div>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -233,20 +221,14 @@ if (isset($mess)) {
             <div class="pb-4 mt-2 mb-0 small lh-sm w-100">
                 <div class="row  align-items-center">
                     <div class="row">
-                        <div class="col-md-6"><input name="assignment_title" class="form-control form-control-sm me-3"
-                                type="text"
-                                value="<?php echo isset($_POST['assignment_title']) ? htmlspecialchars($_POST['assignment_title']) : ''; ?>"
-                                placeholder="Nhập tiêu đề bài tập" required>
+                        <div class="col-md-6"><input name="assignment_title" class="form-control form-control-sm me-3" type="text" value="<?php echo isset($_POST['assignment_title']) ? htmlspecialchars($_POST['assignment_title']) : ''; ?>" placeholder="Nhập tiêu đề bài tập" required>
                         </div>
                         <div class="col-md-3">
-                            <input class="form-control form-control-sm bg-white datepicker"
-                                placeholder="Thời gian kết thúc" name="time_finish" data-date-format="Y-m-d H:i"
-                                data-enable-time="true">
+                            <input class="form-control form-control-sm bg-white datepicker" placeholder="Thời gian kết thúc" name="time_finish" data-date-format="Y-m-d H:i" data-enable-time="true">
                         </div>
 
                         <div class="col-md-3">
-                            <input type="file" name="assignment_file[]" class="form-control form-control-sm me-3"
-                                aria-label="file example" multiple />
+                            <input type="file" name="assignment_file[]" class="form-control form-control-sm me-3" aria-label="file example" multiple />
                         </div>
                         <div class="col-md-3 mt-1">
                             <select class="form-select form-select-sm" name="assignment_status" required>
@@ -268,8 +250,8 @@ if (isset($mess)) {
 <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var datepickerElement = document.querySelector('.datepicker');
-    flatpickr(datepickerElement, {});
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        var datepickerElement = document.querySelector('.datepicker');
+        flatpickr(datepickerElement, {});
+    });
 </script>

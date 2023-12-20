@@ -1,5 +1,6 @@
 <?php include 'navbar.php';
 checkKhoaHoc();
+checkTuan();
 
 unset($_SESSION['ds_question']); //xóa ds id câu hỏi quizz cũ
 
