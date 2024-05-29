@@ -53,7 +53,7 @@ if (isset($_GET['course_id'])) {
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
                             <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#model_pass_edit">Đổi
                                     mật khẩu</a></li>
-                            <li><a class="dropdown-item" href="dang_xuat.php">Đăng xuất</a></li>
+                            <li><a class="dropdown-item" href="log_off.php">Đăng xuất</a></li>
                         </ul>
                     </li>
                 </ul>

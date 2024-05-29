@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 19, 2023 lúc 01:11 PM
+-- Thời gian đã tạo: Th1 12, 2024 lúc 05:41 PM
 -- Phiên bản máy phục vụ: 10.4.28-MariaDB
 -- Phiên bản PHP: 8.1.17
 
@@ -39,28 +39,38 @@ CREATE TABLE `answers` (
 --
 
 INSERT INTO `answers` (`id`, `question_id`, `answer_name`, `is_correct`) VALUES
-(137, 55, '1', 0),
-(138, 55, '2', 1),
-(139, 56, '1', 0),
-(140, 56, '3', 1),
-(141, 57, '1', 0),
-(142, 57, '4', 1),
-(143, 58, '1', 0),
-(144, 58, '4', 1),
-(145, 58, '3', 1),
-(146, 59, '1', 0),
-(147, 59, '4', 1),
-(148, 59, '3', 1),
-(149, 60, '1', 0),
-(150, 60, '4', 1),
-(151, 60, '3', 1),
-(152, 61, 'chó', 1),
-(153, 62, 'chó', 1),
-(154, 63, 'chó', 1),
-(155, 64, 'chó', 1),
-(156, 65, 'chó', 1),
-(157, 66, 'h', 1),
-(158, 66, 'nl', 0);
+(213, 87, '1', 1),
+(214, 87, '2', 0),
+(215, 88, '1', 1),
+(216, 88, '2', 0),
+(217, 89, '1', 1),
+(218, 89, '2', 0),
+(219, 90, '1', 1),
+(220, 90, '2', 1),
+(221, 90, '3', 0),
+(222, 90, '4', 0),
+(223, 91, '1', 1),
+(224, 91, '2', 1),
+(225, 91, '3', 0),
+(226, 91, '4', 0),
+(227, 92, '1', 1),
+(228, 92, '2', 0),
+(229, 93, '1', 1),
+(230, 93, '2', 1),
+(231, 94, '1', 1),
+(232, 94, '2', 1),
+(233, 95, '1', 1),
+(234, 95, '2', 1),
+(235, 96, 'phi', 1),
+(236, 97, 'phifes', 1),
+(237, 98, 'phifes', 1),
+(238, 99, 'f', 1),
+(239, 100, 'f', 1),
+(240, 101, 'f', 1),
+(245, 103, '1', 0),
+(246, 103, '2', 0),
+(247, 103, '3', 1),
+(248, 103, '4', 0);
 
 -- --------------------------------------------------------
 
@@ -73,6 +83,14 @@ CREATE TABLE `assignment_files` (
   `material_id` int(11) NOT NULL,
   `path` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `assignment_files`
+--
+
+INSERT INTO `assignment_files` (`id`, `material_id`, `path`) VALUES
+(33, 153, '../uploads/715105178_Trương Công Phi(1).docx'),
+(34, 153, '../uploads/dd(1).png');
 
 -- --------------------------------------------------------
 
@@ -113,9 +131,25 @@ CREATE TABLE `course_management` (
 --
 
 INSERT INTO `course_management` (`id`, `course_id`, `username`, `created_at`, `role`) VALUES
-(12, 35, 'tk1', '2023-12-13 17:00:00', 1),
-(37, 35, 'tk2', '2023-12-18 13:15:21', 0),
-(38, 37, 'tk1', '2023-12-18 13:29:13', 0);
+(12, 35, 'tk1', '2023-12-13 17:00:00', 0),
+(53, 35, 'tk2', '2023-12-20 13:40:19', 1),
+(54, 35, '715105100', '2023-12-20 13:40:24', 0),
+(55, 35, '715105101', '2023-12-20 13:40:29', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `custom_quizz`
+--
+
+CREATE TABLE `custom_quizz` (
+  `id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `quizz_id` int(11) NOT NULL,
+  `count_lv1` int(11) NOT NULL,
+  `count_lv2` int(11) NOT NULL,
+  `count_lv3` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -128,6 +162,8 @@ CREATE TABLE `history_quizz` (
   `lecture_id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `score` float NOT NULL,
+  `id_question_quizz` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`id_question_quizz`)),
+  `answer` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `time_begin` datetime NOT NULL,
   `time_finish` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -151,7 +187,7 @@ CREATE TABLE `lectures` (
 
 INSERT INTO `lectures` (`id`, `course_id`, `lecture_title`, `status`) VALUES
 (169, 35, 'Tuần 1', 1),
-(184, 35, 'Tuần 2', 0);
+(188, 35, 'Tuần 2', 0);
 
 -- --------------------------------------------------------
 
@@ -176,18 +212,22 @@ CREATE TABLE `lecture_questions` (
 --
 
 INSERT INTO `lecture_questions` (`id`, `lecture_id`, `question_name`, `image`, `level`, `type`, `status`, `added_by`, `created_at`) VALUES
-(55, 169, '1+1 =', '', 1, 'single_choice', 1, 'admin', '2023-12-17 09:03:54'),
-(56, 169, '1+2 =', '', 1, 'single_choice', 1, 'admin', '2023-12-17 09:04:00'),
-(57, 169, '1+3 =', '', 1, 'single_choice', 1, 'admin', '2023-12-17 09:04:05'),
-(58, 169, '1+1 <', '', 1, 'multiplechoice', 1, 'admin', '2023-12-17 09:04:39'),
-(59, 169, '1+1 <', '', 1, 'multiplechoice', 1, 'admin', '2023-12-17 09:04:42'),
-(60, 169, '1+1 <', '', 1, 'multiplechoice', 0, 'admin', '2023-12-17 09:04:44'),
-(61, 169, 'con gì', '', 1, 'fill', 0, 'admin', '2023-12-17 09:04:57'),
-(62, 169, 'con gì', '', 1, 'fill', 0, 'admin', '2023-12-17 09:04:58'),
-(63, 169, 'con gì', '', 1, 'fill', 0, 'admin', '2023-12-17 09:04:58'),
-(64, 169, 'con gì', '', 1, 'fill', 0, 'admin', '2023-12-17 09:04:58'),
-(65, 169, 'con gì', '', 1, 'fill', 0, 'admin', '2023-12-17 09:04:59'),
-(66, 169, 'hihi', '', 1, 'multiplechoice', 0, 'tk1', '2023-12-18 05:52:30');
+(87, 169, 'dễ', '', 1, 'single_choice', 1, 'admin', '2024-01-09 14:12:10'),
+(88, 169, 'dễ2', '', 1, 'single_choice', 1, 'admin', '2024-01-09 14:12:42'),
+(89, 169, 'dễ3', '', 1, 'single_choice', 1, 'admin', '2024-01-09 14:12:47'),
+(90, 169, 'dễ4', '', 1, 'multiplechoice', 1, 'admin', '2024-01-09 14:13:08'),
+(91, 169, 'dễ5', '', 1, 'multiplechoice', 1, 'admin', '2024-01-09 14:13:17'),
+(92, 169, 'vua1', '', 2, 'multiplechoice', 1, 'admin', '2024-01-09 14:13:38'),
+(93, 169, 'vua2', '', 2, 'multiplechoice', 1, 'admin', '2024-01-09 14:13:45'),
+(94, 169, 'vua3', '', 2, 'multiplechoice', 1, 'admin', '2024-01-09 14:13:48'),
+(95, 169, 'vua4', '', 2, 'multiplechoice', 1, 'admin', '2024-01-09 14:13:52'),
+(96, 169, 'vua1', '', 2, 'fill', 1, 'admin', '2024-01-09 14:14:11'),
+(97, 169, 'vua2', '', 2, 'fill', 1, 'admin', '2024-01-09 14:14:19'),
+(98, 169, 'kho1', '', 3, 'fill', 1, 'admin', '2024-01-09 14:14:27'),
+(99, 169, 'kho2', '', 3, 'fill', 1, 'admin', '2024-01-09 14:14:32'),
+(100, 169, 'kho3', '', 3, 'fill', 1, 'admin', '2024-01-09 14:14:34'),
+(101, 169, 'kho4', '', 3, 'fill', 1, 'admin', '2024-01-09 14:14:38'),
+(103, 169, 'kho5', '', 3, 'single_choice', 1, 'admin', '2024-01-09 14:14:55');
 
 -- --------------------------------------------------------
 
@@ -203,16 +243,22 @@ CREATE TABLE `materials` (
   `path` varchar(255) DEFAULT NULL,
   `status` tinyint(1) NOT NULL,
   `position` tinyint(4) NOT NULL,
-  `time_finish` datetime DEFAULT NULL
+  `time_finish` datetime DEFAULT NULL,
+  `count_quizz` int(11) DEFAULT NULL,
+  `time_quizz` int(11) DEFAULT NULL,
+  `count_questions` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `materials`
 --
 
-INSERT INTO `materials` (`id`, `lecture_id`, `material_title`, `type`, `path`, `status`, `position`, `time_finish`) VALUES
-(125, 169, 'đg', 'assignment', NULL, 0, 8, '2023-12-20 12:30:00'),
-(129, 169, 'bài giảng 1', 'pdf', '../uploads/Kết Quả Đăng Ký.pdf', 1, 1, NULL);
+INSERT INTO `materials` (`id`, `lecture_id`, `material_title`, `type`, `path`, `status`, `position`, `time_finish`, `count_quizz`, `time_quizz`, `count_questions`) VALUES
+(148, 169, 'slide', 'pdf', '../uploads/BG Tuần 2 - Kỹ thuật PTTT (up cst).pdf', 0, 1, NULL, NULL, NULL, 0),
+(149, 169, 'word', 'word', '../uploads/715105178_Trương Công Phi.docx', 1, 2, NULL, NULL, NULL, 0),
+(150, 169, 'link', 'link', 'http://daotao.hnue.edu.vn/', 1, 3, NULL, NULL, NULL, 0),
+(153, 169, 'btvn', 'assignment', NULL, 1, 5, '2023-12-25 20:00:00', NULL, NULL, 0),
+(157, 169, 'Quizz', 'quizz', NULL, 1, 6, NULL, 5, 5, 10);
 
 -- --------------------------------------------------------
 
@@ -247,8 +293,12 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `password`, `role`) VALUES
 (1, 'admin', 'c4ca4238a0b923820dcc509a6f75849b', 2),
-(2, 'tk1', 'c20ad4d76fe97759aa27a0c99bff6710', 1),
-(3, 'tk2', 'c4ca4238a0b923820dcc509a6f75849b', 0);
+(2, 'tk1', 'c4ca4238a0b923820dcc509a6f75849b', 0),
+(13, 'tk2', 'c4ca4238a0b923820dcc509a6f75849b', 0),
+(14, 'tk3', 'c4ca4238a0b923820dcc509a6f75849b', 0),
+(15, '715105100', 'c4ca4238a0b923820dcc509a6f75849b', 0),
+(16, '715105101', 'c4ca4238a0b923820dcc509a6f75849b', 0),
+(17, '715105102', 'c4ca4238a0b923820dcc509a6f75849b', 0);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -281,6 +331,14 @@ ALTER TABLE `course_management`
   ADD PRIMARY KEY (`id`),
   ADD KEY `course_id` (`course_id`),
   ADD KEY `username_id` (`username`);
+
+--
+-- Chỉ mục cho bảng `custom_quizz`
+--
+ALTER TABLE `custom_quizz`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `username` (`username`),
+  ADD KEY `quizz_id` (`quizz_id`);
 
 --
 -- Chỉ mục cho bảng `history_quizz`
@@ -334,61 +392,67 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT cho bảng `answers`
 --
 ALTER TABLE `answers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=249;
 
 --
 -- AUTO_INCREMENT cho bảng `assignment_files`
 --
 ALTER TABLE `assignment_files`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT cho bảng `courses`
 --
 ALTER TABLE `courses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 
 --
 -- AUTO_INCREMENT cho bảng `course_management`
 --
 ALTER TABLE `course_management`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+
+--
+-- AUTO_INCREMENT cho bảng `custom_quizz`
+--
+ALTER TABLE `custom_quizz`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT cho bảng `history_quizz`
 --
 ALTER TABLE `history_quizz`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=412;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=487;
 
 --
 -- AUTO_INCREMENT cho bảng `lectures`
 --
 ALTER TABLE `lectures`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=187;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=189;
 
 --
 -- AUTO_INCREMENT cho bảng `lecture_questions`
 --
 ALTER TABLE `lecture_questions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
 
 --
 -- AUTO_INCREMENT cho bảng `materials`
 --
 ALTER TABLE `materials`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=130;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=158;
 
 --
 -- AUTO_INCREMENT cho bảng `submitted_assignments`
 --
 ALTER TABLE `submitted_assignments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
@@ -412,6 +476,13 @@ ALTER TABLE `assignment_files`
 ALTER TABLE `course_management`
   ADD CONSTRAINT `course_management_ibfk_1` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `course_management_ibfk_2` FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `custom_quizz`
+--
+ALTER TABLE `custom_quizz`
+  ADD CONSTRAINT `custom_quizz_ibfk_1` FOREIGN KEY (`username`) REFERENCES `users` (`username`) ON DELETE CASCADE,
+  ADD CONSTRAINT `custom_quizz_ibfk_2` FOREIGN KEY (`quizz_id`) REFERENCES `materials` (`id`) ON DELETE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `history_quizz`

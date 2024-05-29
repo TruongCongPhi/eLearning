@@ -6,6 +6,7 @@ unset($_SESSION['ds_question']); //xóa ds id câu hỏi quizz cũ
 
 $data_course = get('courses', 'id=' . $_GET['course_id'] . '');
 $data_lecture = get('lectures', 'id=' . $_GET['lecture_id'] . '');
+$data_quizz = get('materials', "id={$_GET['quizz_id']}");
 
 if (isset($_SESSION['form_submitted']) && $_SESSION['form_submitted'] == true) { //đã nộp bài không cho quay lại show 404
     include '404_error.php';
@@ -22,7 +23,10 @@ if (isset($_SESSION['form_submitted']) && $_SESSION['form_submitted'] == true) {
     //lưu csdl thông tin khi bắt đầu làm bài
     insert('history_quizz', $lich_su);
     $id = mysqli_insert_id($conn); // lấy id của quizz đang làm
+
 ?>
+
+
     <!-- Thông tin khóa học -->
     <div class="d-flex align-items-center p-3 my-3 bg-purple rounded shadow">
         <div class="lh-1">
@@ -32,10 +36,44 @@ if (isset($_SESSION['form_submitted']) && $_SESSION['form_submitted'] == true) {
     </div>
     <!-- Bắt đầu Khung hien thi cau hoi quizz -->
     <?php
-    $data = getArray('lecture_questions', "lecture_id={$_GET['lecture_id']} AND status=1 ORDER BY RAND()", 5);
-    if ($data && $data->num_rows >= 5) {
+
+
+    $data_quizz_custom = get('custom_quizz', "username='{$username}'");
+
+    if ($data_quizz_custom != null) {
+        // lấy random số câu hỏi theo mức độ
+        $de = getArrayOrder('lecture_questions', "lecture_id={$_GET['lecture_id']} AND status=1 AND level = 1", 'RAND()', $data_quizz_custom['count_lv1']);
+        $vua = getArrayOrder('lecture_questions', "lecture_id={$_GET['lecture_id']} AND status=1 AND level = 2", 'RAND()', $data_quizz_custom['count_lv2']);
+        $kho = getArrayOrder('lecture_questions', "lecture_id={$_GET['lecture_id']} AND status=1 AND level = 3", 'RAND()', $data_quizz_custom['count_lv3']);
+        $kt = 0;
+        if ($de != null) {
+            // lưu vào tất cả dữ liệu truy vấn
+            $de = mysqli_fetch_all($de, MYSQLI_ASSOC);
+        } else {
+            $de = [];
+        }
+        if ($vua != null) {
+            $vua = mysqli_fetch_all($vua, MYSQLI_ASSOC);
+        } else {
+            $vua = [];
+        }
+        if ($kho != null) {
+            $kho = mysqli_fetch_all($kho, MYSQLI_ASSOC);
+        } else {
+            $kho = [];
+        }
+
+        // gộp vào làm một
+        $data = array_merge($de, $vua, $kho);
+    } else $data = [];
+
+    shuffle($data); // random 
+
+
+    // if ($data && $data->num_rows >= $data_quizz['count_questions']) {
+    if (!empty($data)) {
     ?>
-        <form id="id_form" action="update_quizz.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>" method="post">
+        <form id="id_form" action="update_quizz.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>&quizz_id=<?= $_GET['quizz_id'] ?>" method="post">
             <div class="d-flex align-items-center justify-content-center m-auto p-3 my-3 bg-purple rounded shadow" style="width: 60%;">
                 <!-- gán id quizz truyền qua form -->
                 <input type="hidden" name="history_id" value="<?= $id ?>">
@@ -129,7 +167,7 @@ if (isset($_SESSION['form_submitted']) && $_SESSION['form_submitted'] == true) {
     });
 
     // Thời gian làm bài: 1 phút
-    var thoiGianLamBai = 1 * 60; // đơn vị là giây
+    var thoiGianLamBai = <?= $data_quizz['time_quizz'] ?> * 60; // đơn vị là giây
     var target_date = new Date().getTime() + thoiGianLamBai * 1000; // thời điểm kết thúc làm bài
 
     var countdown = document.getElementById('countdown');

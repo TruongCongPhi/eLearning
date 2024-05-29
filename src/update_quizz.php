@@ -1,6 +1,5 @@
 <?php
 include '../function.php';
-session_start();
 unset($_SESSION['quizz_session']); // xóa ds câu hỏi ng dùng cũ
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -56,16 +55,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
+    $_SESSION['quizz_session'] = $quizz_session;
+    $data_quizz_user = json_encode($quizz_session);
+    $data_quizz_all = json_encode($_SESSION['ds_question']); // id cau hoi cua tung quizz
+
     $lich_su = [
+        'id_question_quizz' => $data_quizz_all,
+        'answer' => $data_quizz_user,
         'score' => $score,
         'time_finish' => $time_finish,
     ];
-    $_SESSION['quizz_session'] = $quizz_session;
-
 
     $update_quizz = update('history_quizz', "id={$_POST['history_id']}", $lich_su);
     if ($update_quizz) {
-
-        header("location: show_ket_qua.php?course_id={$_GET['course_id']}&lecture_id={$_GET['lecture_id']}&id_quizz={$_POST['history_id']}");
+        header("location: show_ket_qua.php?course_id={$_GET['course_id']}&lecture_id={$_GET['lecture_id']}&id_quizz={$_POST['history_id']}&quizz_id={$_GET['quizz_id']}");
     }
 }

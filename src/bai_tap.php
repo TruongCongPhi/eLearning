@@ -58,12 +58,18 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
 <!-- điều hướng -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="khoa_hoc.php">Trang chủ</a></li>
-        <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Khóa học:
+        <li class="breadcrumb-item"><a
+                class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                href="khoa_hoc.php">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a
+                class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Khóa học:
                 <?= $data_course['course_title'] ?></a>
         </li>
 
-        <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>"><?= $data_lecture['lecture_title'] ?></a></li>
+        <li class="breadcrumb-item"><a
+                class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>"><?= $data_lecture['lecture_title'] ?></a></li>
         <li class="breadcrumb-item text-dark active" aria-current="page">Bài tập</li>
     </ol>
 </nav>
@@ -85,7 +91,8 @@ if (isset($mess)) {
     if ($data_assignment !== null) {
         while ($row_assignment = $data_assignment->fetch_assoc()) {
     ?>
-            <li class="list-group-item"><i class="fa-solid fa-folder me-2" style="color: #586d93;"></i><a class="text-dark" href="<?= $row_assignment['path'] ?>"><?= substr($row_assignment['path'], 11);  ?></a></li>
+    <li class="list-group-item"><i class="fa-solid fa-folder me-2" style="color: #586d93;"></i><a class="text-dark"
+            href="<?= $row_assignment['path'] ?>"><?= substr($row_assignment['path'], 11);  ?></a></li>
     <?php
         }
     }
@@ -108,7 +115,7 @@ if (isset($mess)) {
         $hours = floor(($time_over % (60 * 60 * 24)) / (60 * 60));
         if ($time_over < 0) {
             $time = "Còn " . substr($days, 1) . " ngày " . substr($hours, 1) . " giờ";
-        } else $time = "Quá : $days ngày $hours giờ";
+        } else $time = "Quá hạn : $days ngày $hours giờ";
 
 
 
@@ -141,10 +148,10 @@ if (isset($mess)) {
             <td scope="row" class="bg-body-tertiary">Lần chỉnh sửa cuối</td>
             <td><?php
                 if ($data_submitted != null) { ?>
-                    <a href="<?= $data_submitted['path'] ?>"><?= substr($data_submitted['path'], 11);  ?></a>
-                    <p>
-                        <?= date('H:i:s d-m-Y ', strtotime($data_submitted['time_submission']))  ?>
-                    </p>
+                <a href="<?= $data_submitted['path'] ?>"><?= substr($data_submitted['path'], 11);  ?></a>
+                <p>
+                    <?= date('H:i:s d-m-Y ', strtotime($data_submitted['time_submission']))  ?>
+                </p>
                 <?php }
                 ?>
 
@@ -160,10 +167,10 @@ if (isset($mess)) {
         </div>
         <span class="col-12" style="font-size: 12px;">Chỉ nộp một file. Nếu nhiều file thì nén vào một tệp!</span>
         <?php if ($data_submitted != null) { ?>
-            <button class="ms-3 col-2 btn btn-sm btn-warning mt-1" name="update" type="submit">Chỉnh sửa</button>
+        <button class="ms-3 col-2 btn btn-sm btn-warning mt-1" name="update" type="submit">Chỉnh sửa</button>
         <?php
         } else { ?>
-            <button class="ms-3 col-2 btn btn-sm btn-success mt-1" name="add" type="submit">Nộp</button>
+        <button class="ms-3 col-2 btn btn-sm btn-success mt-1" name="add" type="submit">Nộp</button>
 
         <?php } ?>
     </div>

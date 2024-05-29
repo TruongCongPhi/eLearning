@@ -109,7 +109,7 @@ function get($table, $condition)
 	if (empty($condition)) {
 		$query = "SELECT * FROM $table";
 	} else {
-		$query = "SELECT * FROM $table WHERE $condition";
+		$query = "SELECT * FROM `$table` WHERE $condition";
 	}
 	//var_dump($query);
 	$result = mysqli_query($conn, $query);
