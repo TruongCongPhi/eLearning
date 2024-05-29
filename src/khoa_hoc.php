@@ -8,8 +8,20 @@ if (isset($_POST['xoa'])) {
     header('location:khoa_hoc.php');
 }
 ?>
-<?php if ($role_all > 1) : ?>
-    <a href="them_khoa_hoc.php" class="btn btn-primary">Thêm khóa học</a>
+<?php if ($role_all > 0) : ?>
+
+<div class="dropdown show">
+    <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        Tùy chọn
+    </a>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" href="them_khoa_hoc.php">Thêm khóa học</a>
+        <a class="dropdown-item" href="them_tai_khoan.php">Thêm tài khoản</a>
+        <a class="dropdown-item" href="quan_ly_user.php">Quản lý người dùng</a>
+
+    </div>
+</div>
 <?php endif ?>
 
 <div class="" style="text-align: center;">
@@ -21,22 +33,20 @@ if (isset($_POST['xoa'])) {
 
         <?php
         $username = $_SESSION['username'];
-        if ($username == 'admin') {
+        if ($username == 'admin') { // admin: hiện tất cả
             $courses = getArray('courses', '');
         } else {
-            $query = "SELECT courses.*
-				FROM courses
-				JOIN course_management ON courses.id = course_management.course_id
-				WHERE course_management.username = '$username' ";
-            $result = mysqli_query($conn, $query);
-            if ($result && $result->num_rows > 0) {
-                $courses = [];
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $courses[] = $row;
-                }
-            } else {
-                $courses = null;
-            }
+            $select = [
+                'courses.*'
+            ];
+            $fromTable = 'courses';
+            $joins = [
+                'JOIN course_management ON courses.id = course_management.course_id'
+            ];
+            $conditions = [
+                "course_management.username ='{$username}'"
+            ];
+            $courses = getJoin($select, $fromTable, $joins, $conditions);
         }
         ?>
 
@@ -47,18 +57,20 @@ if (isset($_POST['xoa'])) {
                 echo '<div class="text-center alert alert-warning">Chưa có khóa học nào!</div>';
             } else {
                 foreach ($courses as $course) : ?>
-                    <div class="col">
-                        <div class="card">
-                            <img src="../images/khoahoc.jpg" class="card-img-top" alt="Course Image">
-                            <div class="card-body">
-                                <h5 class="card-title"><?= $course["course_title"] ?></h5>
-                                <a class="btn btn-primary" href="bai_giang.php?course_id=<?= $course["id"] ?>">Truy cập</a>
-                                <?php if ($role_all > 1) : ?>
-                                    <button class="btn btn-danger" name="xoa" value="<?= $course['id'] ?>" type="submit">Xóa</button>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+            <div class="col">
+                <div class="card">
+                    <img src="../images/khoahoc.jpg" class="card-img-top" alt="Course Image">
+                    <div class="card-body">
+                        <h5 class="card-title"><?= $course["course_title"] ?></h5>
+                        <a class="btn btn-sm btn-primary" href="bai_giang.php?course_id=<?= $course["id"] ?>">Truy
+                            cập</a>
+                        <?php if ($role_all > 0) : ?>
+                        <button class="btn btn-sm btn-danger" name="xoa" value="<?= $course['id'] ?>"
+                            type="submit">Xóa</button>
+                        <?php endif; ?>
                     </div>
+                </div>
+            </div>
             <?php endforeach;
             } ?>
 

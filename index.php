@@ -7,4 +7,4 @@ include 'function.php';
 if (!isLogin()) {
 	header("location: src/dang_nhap.php");
 	exit();
-}
+} else header("location: src/khoa_hoc.php");

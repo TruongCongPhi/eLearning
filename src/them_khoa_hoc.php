@@ -1,6 +1,6 @@
 <?php
 include 'navbar.php';
-if ($role_all < 2) {
+if ($role_all < 1) {
     echo '<div class="text-center alert alert-warning">
    Bạn không được quyền truy cập vào trang này!<a href="khoa_hoc.php" class="alert-link">Quay lại</a>
   </div>';
@@ -9,7 +9,7 @@ if ($role_all < 2) {
     <!-- điều hướng -->
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a class="link-secondary" href="khoa_hoc.php">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="khoa_hoc.php">Trang chủ</a></li>
             <li class="breadcrumb-item text-dark active" aria-current="page">Thêm khóa học</li>
         </ol>
     </nav>
@@ -32,21 +32,29 @@ if ($role_all < 2) {
     </form>
     <?php
     if (isset($_POST['submit'])) {
-        $inser_course = insert('courses', ['course_title' => $_POST['course_title'], 'course_desc' => $_POST['course_desc']]);
-        if ($inser_course) {
-            $id_course_insert = mysqli_insert_id($conn);
-        } else {
-            return;
-        }
-        $check_user_users = searchUser($_POST['user_role']);
-        if (is_null($check_user_users) && !empty($_POST['user_role'])) {
+        $check_user_users = get('users', "username='{$_POST['user_role']}'"); //truy vấn thông tin input :username(quản trị)
+        if (is_null($check_user_users) && !empty($_POST['user_role'])) { // quản trị = null :thông báo lỗi
             echo '<script>alert("Tài khoản không tồn tại vui lòng kiểm tra lại");</script>';
-            return;
-        } elseif (!empty($_POST['user_role'])) {
-            insert('course_management', ['course_id' => $id_course_insert, 'username' => $_POST['user_role'], 'role' => 1]);
-            echo '<script>alert("Thêm thành công");</script>';
-        } else {
-            echo '<script>alert("Thêm thành công, chưa có giảng viên");</script>';
+        } elseif (!empty($_POST['user_role'])) { // !=null và != rỗng : thêm và thêm vào quản lí khóa học
+            $inser_course = insert('courses', ['course_title' => $_POST['course_title'], 'course_desc' => $_POST['course_desc']]);
+            if ($inser_course) {
+                $id_course_insert = mysqli_insert_id($conn);
+                $add = insert('course_management', ['course_id' => $id_course_insert, 'username' => $_POST['user_role'], 'role' => 1]);
+                if ($add) {
+                    echo '<script>alert("Thêm thành công");</script>';
+                } else {
+                    echo "chưa thêm được người dùng vào khóa học";
+                }
+            } else {
+                echo "Thêm thất bại";
+            }
+        } else { // không nhập quản trị thì chỉ thêm khóa học
+            $inser_course = insert('courses', ['course_title' => $_POST['course_title'], 'course_desc' => $_POST['course_desc']]);
+            if ($inser_course) {
+                echo '<script>alert("Thêm thành công (chưa có giảng viên)");</script>';
+            } else {
+                echo "Thêm thất bại";
+            }
         }
     }
     ?>

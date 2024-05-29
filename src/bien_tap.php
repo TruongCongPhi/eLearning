@@ -1,18 +1,19 @@
  <?php
     include 'navbar.php';
     checkKhoaHoc();
+    checkTuan();
     $data_course = get('courses', 'id=' . $_GET['course_id'] . '');
     $data_lecture = get('lectures', 'id=' . $_GET['lecture_id'] . '');
     ?>
  <!-- điều hướng -->
  <nav aria-label="breadcrumb">
      <ol class="breadcrumb">
-         <li class="breadcrumb-item"><a class="link-secondary" href="khoa_hoc.php">Trang chủ</a></li>
-         <li class="breadcrumb-item"><a class="link-secondary" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Khóa học:
+         <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="khoa_hoc.php">Trang chủ</a></li>
+         <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>">Khóa học:
                  <?= $data_course['course_title'] ?></a>
          </li>
 
-         <li class="breadcrumb-item"><a class="link-secondary" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>"><?= $data_lecture['lecture_title'] ?></a></li>
+         <li class="breadcrumb-item"><a class="link-dark link-opacity-50 link-opacity-100-hover link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="bai_giang.php?course_id=<?= $_GET['course_id'] ?>"><?= $data_lecture['lecture_title'] ?></a></li>
          <li class="breadcrumb-item text-dark active" aria-current="page">Biên tập</li>
      </ol>
  </nav>
@@ -45,7 +46,7 @@
                  <th>Tên câu hỏi</th>
                  <th>Loại câu hỏi</th>
                  <th>Mức độ</th>
-                 <?= ($_SESSION['username'] == 'admin') ? "<th>Tác giả</th>" : '' ?>
+                 <?= ($role_course == 1 || $role_all > 0) ? "<th>Tác giả</th>" : '' ?>
                  <th>Trạng thái</th>
                  <th>Thời gian</th>
                  <th>Thao tác</th>
@@ -53,10 +54,10 @@
          </thead>
          <tbody class='table-group-divider'>
              <?php
-                if ($_SESSION['username'] == 'admin') {
-                    $data_question = getArray('lecture_questions', '');
+                if ($role_course == 1 || $role_all > 0) {
+                    $data_question = getArray('lecture_questions', "lecture_id={$_GET['lecture_id']}");
                 } else {
-                    $data_question = getArray('lecture_questions', 'added_by="' . $_SESSION['username'] . '"');
+                    $data_question = getArray('lecture_questions', "lecture_id={$_GET['lecture_id']} AND added_by= '{$_SESSION['username']}'");
                 }
                 ?>
              <?php
@@ -72,7 +73,7 @@
                                 elseif ($data['level'] == 3) : echo 'Khó';
                                 endif; ?>
                          </td>
-                         <?= ($_SESSION['username'] == 'admin') ? '<td>' . $data['added_by'] . '</td>' : '' ?>
+                         <?= ($role_course == 1 || $role_all > 0) ? '<td>' . $data['added_by'] . '</td>' : '' ?>
                          <td><?= ($data['status'] == 0) ? 'Chưa duyệt' : 'Đã duyệt' ?></td>
                          <td><?= date("H:i:s - d/m/y", strtotime($data['created_at'])) ?></td>
 
@@ -80,7 +81,7 @@
                              <div class="btn-group btn-group-sm">
                                  <a class='btn btn-sm btn-info me-1' href='xem_truoc_cau_hoi.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>&question_id=<?= $data['id'] ?>' role='button'>Xem
                                      trước</a>
-                                 <?php if ($_SESSION['username'] == 'admin') {
+                                 <?php if ($role_course == 1 || $role_all > 0) {
                                         if ($data['status'] == 0) {
                                     ?>
                                          <a class='btn btn-sm btn-success me-1' href='duyet_cau_hoi.php?course_id=<?= $_GET['course_id'] ?>&lecture_id=<?= $_GET['lecture_id'] ?>&question_id=<?= $data['id'] ?>&task=confirm' role='button'>Duyệt</a>
@@ -100,7 +101,7 @@
                         $stt++;
                     endforeach;
                 } else { ?>
-                 <td <?= ($_SESSION['username'] == 'admin') ? 'colspan=8' : 'colspan=7' ?> align="center">Chưa có đóng
+                 <td <?= ($role_course == 1 || $role_all > 0) ? 'colspan=8' : 'colspan=7' ?> align="center">Chưa có đóng
                      góp
                      câu hỏi nào</td>
              <?php } ?>

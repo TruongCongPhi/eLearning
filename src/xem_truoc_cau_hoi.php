@@ -1,6 +1,11 @@
 <?php
 include 'navbar.php';
 checkKhoaHoc();
+checkTuan();
+if (!isset($_GET['question_id'])) {
+    header("location: khoa_hoc.php");
+    exit();
+}
 $data_course = get('courses', 'id=' . $_GET['course_id'] . '');
 $data_lecture = get('lectures', 'id=' . $_GET['lecture_id'] . '');
 $data_question = get('lecture_questions', 'id=' . $_GET['question_id'] . '')

@@ -1,6 +1,6 @@
 <?php
 include 'connectdb.php';
-
+session_start();
 // Begin Login function
 function isLogin()
 {
@@ -30,11 +30,9 @@ function checkLogin($username, $password)
 			if ($username == $row['username'] && md5($password) == $row['password']) {
 				session_start();
 				$user_role_all = get('users', 'username="' . $username . '"')['role'];
-				$user_role_course = get('course_management', 'username="' . $username . '"')['role'];
 
 				$_SESSION['username'] = $username;
 				$_SESSION['role_all'] = $user_role_all;
-				$_SESSION['role_course'] = $user_role_course;
 				if ($username == 'admin') {
 					$_SESSION['quyen'] = 1;
 				} else {
@@ -49,23 +47,69 @@ function checkLogin($username, $password)
 }
 // end checkLogin
 
-// check vào Khóa học
+// check truy cập trái phép
 function checkKhoaHoc()
 {
 	if (!isset($_GET['course_id'])) {
-		header("location: khoa_hoc.php");
+		header("location: 404_error.php");
 		exit();
+	} else {
+		$check = get('courses', "id='{$_GET['course_id']}'");
+		if (!$check || $check == null) {
+			header('location: 404_error.php');
+			exit();
+		}
 	}
 }
 
+function checkTuan()
+{
+	if (!isset($_GET['lecture_id']) || !is_numeric($_GET['lecture_id'])) {
+		header("Location: 404_error.php");
+		exit();
+	}
 
+	$lectureId = $_GET['lecture_id'];
+	$check = get('lectures', "id='{$lectureId}'");
+
+	if (!$check || $check == null) {
+		header('Location: 404_error.php');
+		exit();
+	}
+}
+function checkHocLieu()
+{
+	if (!isset($_GET['material_id']) || !is_numeric($_GET['material_id'])) {
+		header("Location: 404_error.php");
+		exit();
+	}
+
+	$materialId = $_GET['material_id'];
+	$check = get('materials', "id='{$materialId}'");
+
+	if (!$check || $check == null) {
+		header('Location: 404_error.php');
+		exit();
+	}
+}
+//end check truy cập
+
+// check quyền khóa học
+function checkRoleCourse($course_id, $username)
+{
+	$condition = "course_id={$course_id} AND username='{$username}";
+	$user_role_course = get('course_management', $condition)['role'];
+	return $user_role_course;
+}
+
+// lấy một
 function get($table, $condition)
 {
 	global $conn;
 	if (empty($condition)) {
 		$query = "SELECT * FROM $table";
 	} else {
-		$query = "SELECT * FROM $table WHERE $condition";
+		$query = "SELECT * FROM `$table` WHERE $condition";
 	}
 	//var_dump($query);
 	$result = mysqli_query($conn, $query);
@@ -76,14 +120,14 @@ function get($table, $condition)
 	}
 }
 
-//lấy nhiều bản ghi, mặc định là 50
-function getArray($tableName, $condition, $limit = 50)
+//lấy danh sách 
+function getArray($tableName, $condition)
 {
 	global $conn;
 	if (empty($condition)) {
-		$query = "SELECT * FROM $tableName LIMIT $limit";
+		$query = "SELECT * FROM $tableName";
 	} else {
-		$query = "SELECT * FROM $tableName WHERE $condition LIMIT $limit";
+		$query = "SELECT * FROM $tableName WHERE $condition";
 	}
 	//var_dump($query);
 	$result = mysqli_query($conn, $query);
@@ -93,11 +137,40 @@ function getArray($tableName, $condition, $limit = 50)
 		return null;
 	}
 }
-function getArrayOrder($tableName, $condition, $limit)
+
+//lấy từ nhiều bảng lk
+function getJoin($selectFields, $fromTable, $joins, $conditions)
+{
+	global $conn;
+	$select = implode(', ', $selectFields);
+	$from = $fromTable;
+	$join = implode(' ', $joins);
+	$where = !empty($conditions) ? "WHERE " . implode(' AND ', $conditions) : '';
+
+	$query = "SELECT $select FROM $from $join $where";
+	$result = mysqli_query($conn, $query);
+
+	if ($result && $result->num_rows > 0) {
+		$data = array();
+		while ($row = $result->fetch_assoc()) {
+			$data[] = $row;
+		}
+		return $data;
+	} else {
+		return null;
+	}
+}
+
+//lấy danh sách sắp xép
+function getArrayOrder($tableName, $condition1, $condition2, $limit)
 {
 	global $conn;
 
-	$query = "SELECT * FROM $tableName ORDER BY $condition LIMIT $limit";
+	if (!empty($condition1)) {
+		$query = "SELECT * FROM $tableName WHERE $condition1 ORDER BY $condition2 LIMIT $limit";
+	} else {
+		$query = "SELECT * FROM $tableName ORDER BY $condition2 LIMIT $limit";
+	}
 	//var_dump($query);
 	$result = mysqli_query($conn, $query);
 	if ($result && $result->num_rows > 0) {
@@ -107,7 +180,7 @@ function getArrayOrder($tableName, $condition, $limit)
 	}
 }
 
-//post
+//insert
 function insert($tableName, $columnValueArray = [])
 {
 	global $conn;
@@ -124,7 +197,7 @@ function insert($tableName, $columnValueArray = [])
 		return false;
 }
 //update
-function update($tableName, $columnValueArray = [], $condition)
+function update($tableName, $condition, $columnValueArray = [])
 {
 	global $conn;
 	$statement = '';
@@ -155,7 +228,7 @@ function delete($tableName, $condition)
 	}
 }
 
-//count : đếm số lượng bản ghi trong bảng
+//count 
 function countt($tableName, $condition)
 {
 	global $conn;
@@ -167,10 +240,12 @@ function countt($tableName, $condition)
 	$result = mysqli_query($conn, $query);
 	return $result->num_rows;
 }
+
+//tìm kiếm người dùng
 function searchUser($name)
 {
 	global $conn;
-	$sql = "SELECT * FROM users WHERE username LIKE '$name'";
+	$sql = "SELECT * FROM users WHERE username LIKE '%$name%'";
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 		return $result;
@@ -178,7 +253,7 @@ function searchUser($name)
 		return null;
 	}
 }
-
+// check Ảnh
 function checkImage($file)
 {
 	$targetDirectory = "../uploads/";
@@ -205,6 +280,7 @@ function checkImage($file)
 		return false;
 	}
 }
+
 function uploadFile($file)
 {
 	$targetDirectory = "../uploads/";
